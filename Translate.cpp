@@ -5,6 +5,9 @@ void decode(int oper);
 std::string DectoHex(int Dec);
 std::string DectoBin(int len, int Dec);
 int BintoDec();
+std::string BintoHex(std::string Bin);
+int HextoDec(std::string Hex);
+std::string HextoBin(std::string Hex);
 
 std::string encode(std::string operation, int rs, int rt, int rd)
 {
@@ -59,3 +62,27 @@ int BintoDec(std::string Bin)
 
 	return Dec;
 }
+std::string BintoHex(std::string Bin){
+	int Dec = BintoDec(Bin);
+	return DectoHex(Dec);
+}
+int HextoDec(std::string Hex){
+	char str[16] = {'0','1','2','3','4','5','6','7','8','9',
+	'a','b','c','d','e','f'};
+	int Dec = 0;
+	for(int i = 2;i<Hex.length();i++){
+		Dec *=16;
+		for(int j = 0;j<16;j++){
+			if(str[j] == Hex[i]){
+				Dec += j;
+				break;
+			}
+		}
+	}
+	return Dec;
+}
+std::string HextoBin(std::string Hex){
+	int Dec = HextoDec(Hex);
+	return DectoBin(32,Dec);
+}
+
