@@ -26,8 +26,7 @@ void decode(int oper)
 std::string DectoHex(int Dec)
 {
 	std::string Hex = "";
-	std::string str[16] = {"0","1","2","3","4","5","6","7","8","9",
-										"a","b","c","d","e","f"};
+	std::string str[16] = {"0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"};
 	while(Dec != 0){
 		Hex = str[Dec%16] + Hex;
 		Dec/=16;
@@ -67,8 +66,7 @@ std::string BintoHex(std::string Bin){
 	return DectoHex(Dec);
 }
 int HextoDec(std::string Hex){
-	char str[16] = {'0','1','2','3','4','5','6','7','8','9',
-	'a','b','c','d','e','f'};
+	char str[16] = {'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
 	int Dec = 0;
 	for(int i = 2;i<Hex.length();i++){
 		Dec *=16;
@@ -86,3 +84,17 @@ std::string HextoBin(std::string Hex){
 	return DectoBin(32,Dec);
 }
 
+std::string AddOperation(std::string data1,std::string data2){
+	std::string ans = "";
+	for(int i = 0;i<data1.length();i++){
+		if(data1[i] == 1 && data2[i] == 1) ans = "1"+ans;
+		else ans = "0"+ans;
+	}
+}
+std::string OrOperation(std::string data1,std::string data2){
+	std::string ans = "";
+	for(int i = 0;i<data1.length();i++){
+		if(data1[i] == 1 || data2[i] == 1) ans = "1"+ans;
+		else ans = "0"+ans;
+	}
+}

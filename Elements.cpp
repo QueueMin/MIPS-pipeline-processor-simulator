@@ -13,6 +13,7 @@
 class Reg{
 	public:
 		std::string PC;
+		std::string NextPC;
 		std::string BranchAddress;
 		bool PCSrc;
 		std::string Regi[32];
@@ -110,7 +111,6 @@ int ALUControl(std::string funct, bool ALUOp1, bool ALUOp0){
 	}
 }
 void control(std::string instruct, ControlSignal &controlSignal){
-	int tmp = BintoDec(instruct);
 	controlSignal.RegDst=0;
 	controlSignal.Branch=0;
 	controlSignal.MemRead=0;

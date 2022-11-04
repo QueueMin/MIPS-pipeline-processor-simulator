@@ -6,14 +6,17 @@ using namespace std;
 
 void IF(IF_ID &IFID,Reg &reg, string op, int rs, int rt, int rd){
 	int tmp;
+	tmp = HextoDec(reg.PC);
+	reg.NextPC = DectoHex(tmp+4);
+
 	if(reg.PCSrc == 0){
-		tmp = HextoDec(reg.PC);
-		IFID.PC = DectoHex(tmp+4);
+		reg.PC = reg.NextPC;
 	}
 	else{
-		tmp = HextoDec(reg.BranchAddress);
-		IFID.PC = DectoHex(tmp+4);
+		reg.PC = reg.BranchAddress;
 	}
+	tmp = HextoDec(reg.PC);
+	IFID.PC = DectoHex(tmp+4);
 
 	IFID.inst = encode(op,rs,rt,rd);
 
@@ -74,10 +77,16 @@ void EX(ID_EX IDEX, EX_MEM &EXMEM){
 		if(IDEX.RegDst == 0) EXMEM.Rd = IDEX.Rt;
 		else EXMEM.Rd = IDEX.Rd;
 }
-void MEM(EX_MEM EXMEM, MEM_WB &MEMWB){
+void MEM(EX_MEM EXMEM, MEM_WB &MEMWB,Reg &reg){
 		MEMWB.MemtoReg = EXMEM.MemtoReg;
 		MEMWB.RegWrite = EXMEM.RegWrite;
 
+		reg.BranchAddress = EXMEM.PC;
+
+		if(EXMEM.Branch == 1 && EXMEM.Zero == 1){
+			reg.PCSrc = 1;
+		}
+		
 		MEMWB.Data="";// lw sw 구현
 		MEMWB.Address = EXMEM.ALUResult;
 		MEMWB.Rd = EXMEM.Rd;
