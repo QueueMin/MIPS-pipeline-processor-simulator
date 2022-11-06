@@ -1,29 +1,36 @@
-#include "Elements.cpp"
+#include "elements.cpp"
 
 std::string encode(std::string operation, int rs, int rt, int rd);
 void decode(int oper);
-std::string DectoHex(int Dec);
-std::string DectoBin(int len, int Dec);
-int BintoDec();
-std::string BintoHex(std::string Bin);
-int HextoDec(std::string Hex);
-std::string HextoBin(std::string Hex);
+std::string decToHex(int Dec);
+std::string decToBin(int len, int Dec);
+int binToDec();
+std::string binToHex(std::string Bin);
+int hexToDec(std::string Hex);
+std::string hexToBin(std::string Hex);
 
+// operation과 rs, rt, rd 레지스터의 번호를 전달받아 32자리 2진수로 반환
 std::string encode(std::string operation, int rs, int rt, int rd)
 {
+
 	std::string oper = "";
+	int shamt = 0;
 	if(operation == "add"){
-		int shamt = 0;
-		oper = DectoBin(6,OP_ADD) + DectoBin(5,rs) + DectoBin(5,rt)
-		+ DectoBin(5,rd) + DectoBin(5,shamt) + DectoBin(6,FUNCT_ADD);
+		shamt = 0;
+		oper = decToBin(6,OP_ADD) + decToBin(5,rs) + decToBin(5,rt)
+		+ decToBin(5,rd) + decToBin(5,shamt) + decToBin(6,FUNCT_ADD);
 	}
 	return oper;
 }
+
 void decode(int oper)
 {
 
 }
-std::string DectoHex(int Dec)
+
+
+// 10진수 Dec를 8자리의 16진수로 바꾼 후 앞에 0x를 붙여 string으로 반환
+std::string decToHex(int Dec) 
 {
 	std::string Hex = "";
 	std::string str[16] = {"0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"};
@@ -38,7 +45,9 @@ std::string DectoHex(int Dec)
 	Hex = "0x" + Hex;
 	return Hex;
 }
-std::string DectoBin(int len, int Dec)
+
+// 10진수 Dec를 len길이만큼의 2진수로 변환하여 string으로 반환
+std::string decToBin(int len, int Dec) 
 {
 	std::string Bin = "";
 	while(Dec != 0){
@@ -51,7 +60,9 @@ std::string DectoBin(int len, int Dec)
 	}
 	return Bin;
 }
-int BintoDec(std::string Bin)
+
+// 2진수 Bin을 10진수로 변환하여 int로 반환
+int binToDec(std::string Bin)
 {
 	int Dec = 0;
 	for(int i = 0;i<Bin.length();i++){
@@ -61,11 +72,16 @@ int BintoDec(std::string Bin)
 
 	return Dec;
 }
-std::string BintoHex(std::string Bin){
-	int Dec = BintoDec(Bin);
-	return DectoHex(Dec);
+
+// 2진수를 16진수로 반환. 0xXXXXXXXX의 문자열 형태
+std::string binToHex(std::string Bin){
+	int Dec = binToDec(Bin);
+	return decToHex(Dec);
 }
-int HextoDec(std::string Hex){
+
+
+// 0xXXXXXXXX형태의 문자열로 받은 16진수를 10진수로 변환하여 반환.
+int hexToDec(std::string Hex){
 	char str[16] = {'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
 	int Dec = 0;
 	for(int i = 2;i<Hex.length();i++){
@@ -79,19 +95,27 @@ int HextoDec(std::string Hex){
 	}
 	return Dec;
 }
-std::string HextoBin(std::string Hex){
-	int Dec = HextoDec(Hex);
-	return DectoBin(32,Dec);
+
+// 16진수를 32자리의 2진수로 변환하여 반환.
+std::string hexToBin(std::string Hex){
+	int Dec = hexToDec(Hex);
+	return decToBin(32,Dec);
 }
 
-std::string AddOperation(std::string data1,std::string data2){
-	std::string ans = "";
-	for(int i = 0;i<data1.length();i++){
-		if(data1[i] == 1 && data2[i] == 1) ans = "1"+ans;
-		else ans = "0"+ans;
-	}
+
+// 개발 속도를 위해 10진수로 변환 후 c++의 기본 지원 bitwise 연산 사용을 제안함.
+// 변환 연산자를 잘 만들어놓기도 했으므로...
+// 스트링으로 주어진 2진수들의 덧셈. 이후 16진수로 반환하려고 함.
+std::string addOperation(std::string data1, std::string data2){
+	unsigned int i1 = binToDec(data1);
+	unsigned int i2 = binToDec(data2);
+	
+	return decToHex(i1|i2);
 }
-std::string OrOperation(std::string data1,std::string data2){
+
+// 스트링으로 주어진 2진수들의 덧셈.
+std::string orOperation(std::string data1,std::string data2){
+	// 미완성
 	std::string ans = "";
 	for(int i = 0;i<data1.length();i++){
 		if(data1[i] == 1 || data2[i] == 1) ans = "1"+ans;
