@@ -34,6 +34,7 @@ class ID_EX{
 		std::string Data2="";
 
 		std::string Extend="";
+		std::string Rs="";
 		std::string Rt="";
 		std::string Rd="";
 };
