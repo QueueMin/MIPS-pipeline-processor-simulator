@@ -5,6 +5,8 @@ class IF_ID{
 	public:
 		std::string PC="";
 		std::string inst="";
+		std::string Rt=0;
+		std::string Rs=0;
         
         bool write = 1; // write 신호. 기본적으로 쓸 수 있는 상태로 설정.
 
