@@ -12,5 +12,6 @@
 ### DONE
 
 ### In Progress
-
+	컴파일 방식, 메모리 할당 토의
 ### Require
+	operation 정의, 그에따른 control

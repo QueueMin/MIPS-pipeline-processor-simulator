@@ -1,5 +1,8 @@
 #include <iostream>
 #include <fstream>
+#include <bitset>
+#include "control.cpp"
+#include "translate.cpp"
 #include "simulator.cpp"
 using namespace std;
 
@@ -14,8 +17,10 @@ int main(void){
 	MEM_WB MEMWB;
 
 	string op = "add";
-	int rs = 1,rt = 2,rd = 3;
-	string str = encode(op,rs,rt,rd);
+	bitset<5> rs = 1;
+	bitset<5> rt = 2;
+	bitset<5> rd = 3;
+	bitset<32> str = encode(op,rs,rt,rd);
 	cout << str << '\n';
 	int x = binToDec(str);
 	cout << x << '\n';
