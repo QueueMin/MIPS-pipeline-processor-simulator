@@ -1,6 +1,7 @@
 #include <string>
 #include <bitset>
-#include "Control.cpp"
+#include "FileEncode.cpp"
+#include "ControlUnit.cpp"
 #include "ForwardingUnit.cpp"
 #include "HazardDetectionUnit.cpp"
 #include "Translate.cpp"
@@ -10,8 +11,14 @@
 class Simulator
 {
 public:
+	std::bitset<32> program[100];
 	ForwardingUnit ForwardUint;
 	HazardDetectionUnit HazardUnit;
+	ControlUnit ControlUnit;
+	IF_ID IFID;
+	ID_EX IDEX;
+	EX_MEM EXMEM;
+	MEM_WB MEMWB;
 
 	std::bitset<32> PC; // 현재
 	std::bitset<32> NextPC;
@@ -19,9 +26,10 @@ public:
 	bool PCSrc;
 	std::bitset<32> Regi[32];
 
-	Simulator(std::bitset<32> PC)
+	Simulator(std::string fileName)
 	{
 		// 생성 시 입력받은 PC를 저장하고 각 레지스터를 초기화.
+		encode(fileName, program,0);
 		this->PC = PC;
 		this->PCSrc = 0;
 		for (int i = 0; i < 32; i++)
@@ -31,7 +39,7 @@ public:
 	}
 
 	// 시뮬레이터가 Instruction Fetch를 실행. 실행한 결과를 주소값을 받은 IF/ID register 객체에 저장한다.
-	void IF(IF_ID &IFID, std::bitset<6> op, std::bitset<5> rs, std::bitset<5> rt, std::bitset<5> rd)
+	void IF(std::bitset<6> op, std::bitset<5> rs, std::bitset<5> rt, std::bitset<5> rd)
 	{
 		std::bitset<32> tmpPC;							// PC를 다루기 위한 변수 tmpPC
 		tmpPC = this->PC;										// 현재 simulator 객체가 가지고 있는 PC를 받아와서 10진수로 변환
@@ -60,20 +68,20 @@ public:
 
 	// 시뮬레이터가 Instruction Decode를 실행.
 	//  Instruction의 OPcode에 따라 control unit을 조정한 뒤, 주소값을 받은 ID_EX 레지스터 객체에 해당 값들을 저장한다.
-	void ID(IF_ID IFID, ID_EX &IDEX, MEM_WB MEMWB, ControlUnit &cUnit)
+	void ID()
 	{
 		HazardUnit.detect(IFID,IDEX);
-		cUnit.setControl(IFID.Operation,IFID.Function);
+		ControlUnit.setControl(IFID.Operation,IFID.Function);
 
-		IDEX.RegDst = cUnit.RegDst;
-		IDEX.Branch = cUnit.Branch;
-		IDEX.MemRead = cUnit.MemRead;
-		IDEX.MemtoReg = cUnit.MemtoReg;
-		IDEX.ALUOp1 = cUnit.ALUOp1;
-		IDEX.ALUOp0 = cUnit.ALUOp0;
-		IDEX.MemWrite = cUnit.MemWrite;
-		IDEX.ALUSrc = cUnit.ALUSrc;
-		IDEX.RegWrite = cUnit.RegWrite;
+		IDEX.RegDst = ControlUnit.RegDst;
+		IDEX.Branch = ControlUnit.Branch;
+		IDEX.MemRead = ControlUnit.MemRead;
+		IDEX.MemtoReg = ControlUnit.MemtoReg;
+		IDEX.ALUOp1 = ControlUnit.ALUOp1;
+		IDEX.ALUOp0 = ControlUnit.ALUOp0;
+		IDEX.MemWrite = ControlUnit.MemWrite;
+		IDEX.ALUSrc = ControlUnit.ALUSrc;
+		IDEX.RegWrite = ControlUnit.RegWrite;
 
 		IDEX.Data1 = this->Regi[binToDec(IFID.Rs)];
 		IDEX.Data2 = this->Regi[binToDec(IFID.Rt)];
@@ -86,7 +94,7 @@ public:
 	// 시뮬레이터가 ID_EX 레지스터 객체를 바탕으로 Operation을 Excute하거나 주소값을 계산.
 	// 이때 각 값들을 해당 Operation에서 사용하던 안하던 일단 계산은 하는 식으로 구현하는게 목표.
 	// 따라서 코드 재 확인 필요.
-	void EX(ID_EX IDEX, EX_MEM &EXMEM, MEM_WB MEMWB)
+	void EX()
 	{
 		ForwardUint.setForward(IDEX,EXMEM,MEMWB);
 
@@ -135,7 +143,7 @@ public:
 
 	// Memory 계층에 접근하는 작업 수행.
 	// 수행한 작업은 MEM_WB 객체에 저장.
-	void MEM(EX_MEM EXMEM, MEM_WB &MEMWB)
+	void MEM()
 	{
 		MEMWB.MemtoReg = EXMEM.MemtoReg;
 		MEMWB.RegWrite = EXMEM.RegWrite;
@@ -148,7 +156,7 @@ public:
 	}
 
 	// 레지스터에 수행한 작업 결과를 저장.
-	void WB(MEM_WB MEMWB)
+	void WB()
 	{
 		std::bitset<32> data;
 		if (MEMWB.MemtoReg == false)

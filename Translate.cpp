@@ -3,21 +3,6 @@
 #include <bitset>
 #include "Elements.cpp"
 
-// operation과 rs, rt, rd 레지스터의 번호를 전달받아 32자리 2진수로 반환
-std::bitset<32> encode(std::string operation, std::bitset<5> rs, std::bitset<5> rt, std::bitset<5> rd)
-{
-	std::bitset<32> oper;
-	oper.reset();
-	std::bitset<5> shamt;
-	shamt.reset();
-	// 컴파일러의 반환값을 확인하고 구현
-	// if(operation == "add"){
-	// 	shamt = 0;
-	// 	oper = decToBin(6,OP_ADD) + decToBin(5,rs) + decToBin(5,rt)
-	// 	+ decToBin(5,rd) + decToBin(5,shamt) + decToBin(6,FUNCT_ADD);
-	// }
-	return oper;
-} // 컴파일파일 제작 후 이동 예정
 
 // 10진수 Dec를 8자리의 16진수로 바꾼 후 앞에 0x를 붙여 string으로 반환
 std::string decToHex(int Dec)
@@ -37,19 +22,6 @@ std::string decToHex(int Dec)
 	Hex = "0x" + Hex;
 	return Hex;
 }
-
-// 10진수 Dec를 len길이만큼의 2진수로 변환하여 string으로 반환
-// bitset 함수에 존재 ex) bitset<5> b(6); = 00110
-// std::bitset decToBin(int len, int Dec)
-// {
-// 	std::bitset<5> Bin;Bin.reset();
-// 	while(Dec != 0){
-// 		if(Dec%2 == 1) Bin = "1"+Bin;
-// 		else Bin = "0"+Bin;
-// 		Dec/=2;
-// 	}
-// 	return Bin;
-// }
 
 // 2진수 Bin을 10진수로 변환하여 int로 반환
 template <size_t T>

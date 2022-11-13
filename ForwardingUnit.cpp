@@ -1,3 +1,5 @@
+#ifndef FORWARDINGUNIT_INCLUDED
+#define FORWARDINGUNIT_INCLUDED
 #include "PipelineRegisters.cpp"
 
 class ForwardingUnit
@@ -35,3 +37,5 @@ public:
 		return forwardB;
 	}
 };
+
+#endif

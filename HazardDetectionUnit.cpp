@@ -1,3 +1,5 @@
+#ifndef HAZARDDETECTIONUNIT_INCLUDED
+#define HAZARDDETECTIONUNIT_INCLUDED
 #include "PipelineRegisters.cpp"
 
 class HazardDetectionUnit
@@ -37,3 +39,4 @@ public:
 		}
 	}
 };
+#endif
