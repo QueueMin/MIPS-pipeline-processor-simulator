@@ -1,5 +1,6 @@
 #include <string>
 #include <bitset>
+#include <map>
 #include "FileEncode.cpp"
 #include "ControlUnit.cpp"
 #include "ForwardingUnit.cpp"
@@ -11,7 +12,6 @@
 class Simulator
 {
 public:
-	std::bitset<32> program[100];
 	ForwardingUnit ForwardUint;
 	HazardDetectionUnit HazardUnit;
 	ControlUnit ControlUnit;
@@ -24,14 +24,16 @@ public:
 	std::bitset<32> NextPC;
 	std::bitset<32> BranchAddress;
 	bool PCSrc;
+	int nowIdx;
 	std::bitset<32> Regi[32];
 
 	Simulator(std::string fileName)
 	{
 		// 생성 시 입력받은 PC를 저장하고 각 레지스터를 초기화.
-		encode(fileName, program,0);
-		this->PC = PC;
+		encode(fileName);
+		this->PC = startPC;
 		this->PCSrc = 0;
+		this->nowIdx = 0;
 		for (int i = 0; i < 32; i++)
 		{
 			this->Regi[i].reset();
@@ -39,7 +41,7 @@ public:
 	}
 
 	// 시뮬레이터가 Instruction Fetch를 실행. 실행한 결과를 주소값을 받은 IF/ID register 객체에 저장한다.
-	void IF(std::bitset<6> op, std::bitset<5> rs, std::bitset<5> rt, std::bitset<5> rd)
+	void IF()
 	{
 		std::bitset<32> tmpPC;							// PC를 다루기 위한 변수 tmpPC
 		tmpPC = this->PC;										// 현재 simulator 객체가 가지고 있는 PC를 받아와서 10진수로 변환
@@ -167,6 +169,16 @@ public:
 		if (MEMWB.RegWrite == true)
 		{
 			this->Regi[binToDec(MEMWB.Rd)] = data;
+		}
+	}
+	void run(){
+		while(nowIdx<fileLength+4){
+			WB();
+			MEM();
+			EX();
+			ID();
+			IF();
+			if(!HazardUnit.stool) nowIdx++;
 		}
 	}
 };

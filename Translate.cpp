@@ -3,7 +3,6 @@
 #include <bitset>
 #include "Elements.cpp"
 
-
 // 10진수 Dec를 8자리의 16진수로 바꾼 후 앞에 0x를 붙여 string으로 반환
 std::string decToHex(int Dec)
 {
@@ -28,10 +27,10 @@ template <size_t T>
 int binToDec(std::bitset<T> Bin)
 {
 	int Dec = 0;
-	for (int i = 0; i < Bin.size(); i++)
+	for (int i = Bin.size() - 1; i >= 0; i--)
 	{
 		Dec *= 2;
-		if (Bin[i] == '1')
+		if (Bin[i] == 1)
 			Dec += 1;
 	}
 
