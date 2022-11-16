@@ -15,12 +15,14 @@ std::bitset<32> startPC = hexToBin("0x00400024");
 std::map<std::string, int> words;
 std::map<std::string, int> jumpIdx; // index 0 에서부터의 거리
 int fileLength = -1;
-struct ChechList
+struct CheckList
 {
   std::string oper;
   std::string target;
   int num;
 };
+
+// instruction이 대상으로 하는 register의 번호를 정수로 return 
 int registerNumber(std::string registerNum)
 {
   if (registerNum == "$0" || registerNum == "$zero")
@@ -85,21 +87,24 @@ int registerNumber(std::string registerNum)
     return 29;
   if (registerNum == "$30" || registerNum == "$fp")
     return 30;
-  if (registerNum == "$31" || registerNum == "$")
+  if (registerNum == "$31" || registerNum == "$ra")
     return 31;
 }
+
+
+// j format encode를 수행
 std::bitset<32> encode_J(std::string oper, std::string con)
 {
-  std::bitset<6> tmp6bit;
+  std::bitset<6> opcode;
   std::bitset<26> JumpAddress;
   std::bitset<32> returnBitset;
 
-  // opcode
-  tmp6bit = OP_J;
+  // opcode를 최종 return할 bitset에 저장
+  opcode = OP_J;
   for (int i = 0; i < 6; i++)
-    returnBitset[i + 26] = tmp6bit[i];
+    returnBitset[i + 26] = opcode[i];
 
-  // address
+  // jumpIdx map에서 현재 jump하려는 주소가 있는지 체크.
   if (jumpIdx.find(con) != jumpIdx.end())
   {
     JumpAddress = (binToDec(startPC) / 4) + jumpIdx[con];
@@ -109,24 +114,28 @@ std::bitset<32> encode_J(std::string oper, std::string con)
   std::cout << returnBitset << '\n';
   return returnBitset;
 }
+
+
+// i format encode를 수행
 std::bitset<32> encode_I(std::string oper, std::string rt, std::string con, std::string rs = "")
 {
   std::string tmp = "";
-  std::bitset<5> tmp5bit;
-  std::bitset<6> tmp6bit;
-  std::bitset<16> tmpi;
+  std::bitset<5> regNum;
+  std::bitset<6> opcode;
+  std::bitset<16> ival;
   std::bitset<32> returnBitset;
 
+  // 수행할 operation을 opcode로 변환
   if (oper == "lw")
-    tmp6bit = OP_LW;
+    opcode = OP_LW;
   else if (oper == "sw")
-    tmp6bit = OP_SW;
+    opcode = OP_SW;
   else if (oper == "beq")
-    tmp6bit = OP_BEQ;
+    opcode = OP_BEQ;
 
-  // opcode
+  // 변환된 opcode를 최종
   for (int i = 0; i < 6; i++)
-    returnBitset[i + 26] = tmp6bit[i];
+    returnBitset[i + 26] = opcode[i];
 
   // rt
   for(int i = 0;i<rt.length();i++){
@@ -136,10 +145,11 @@ std::bitset<32> encode_I(std::string oper, std::string rt, std::string con, std:
     }
   }
 
-  tmp5bit = registerNumber(rt);
+  regNum = registerNumber(rt);
   for (int i = 0; i < 5; i++)
-    returnBitset[i + 16] = tmp5bit[i];
+    returnBitset[i + 16] = regNum[i];
 
+  
   if (oper == "beq")
   {
     // rs
@@ -149,9 +159,9 @@ std::bitset<32> encode_I(std::string oper, std::string rt, std::string con, std:
         break;
       }
     }
-    tmp5bit = registerNumber(rs);
+    regNum = registerNumber(rs);
     for (int i = 0; i < 5; i++)
-      returnBitset[i + 21] = tmp5bit[i];
+      returnBitset[i + 21] = regNum[i];
     // offset은 파일 두번째 순회시에 삽입
   }
   else // con을 rs와 상수로 분리 및 저장
@@ -162,20 +172,22 @@ std::bitset<32> encode_I(std::string oper, std::string rt, std::string con, std:
         break;
       tmp += con[i];
     }
-    tmpi = std::stoi(tmp);
+    ival = std::stoi(tmp);
     for (int i = 0; i < 16; i++)
-      returnBitset[i] = tmpi[i];
+      returnBitset[i] = ival[i];
 
     // rs
     rs = con.substr(tmp.length() - 1, con.length() - 1);
     rs.replace(rs.find("("), 1, "");
     rs.replace(rs.find(")"), 1, "");
-    tmp5bit = registerNumber(rs);
+    regNum = registerNumber(rs);
     for (int i = 0; i < 5; i++)
-      returnBitset[i + 21] = tmp5bit[i];
+      returnBitset[i + 21] = regNum[i];
   }
   return returnBitset;
 }
+
+
 std::bitset<32> encode_R(std::string oper, std::string rd, std::string rs, std::string rt)
 {
   std::bitset<5> tmp5bit;
@@ -239,7 +251,6 @@ std::bitset<32> encode_R(std::string oper, std::string rd, std::string rs, std::
     returnBitset[i + 11] = tmp5bit[i];
 
   // rt
-  // rt.replace(rt.find(","), 1, "");
   tmp5bit = registerNumber(rt);
   for (int i = 0; i < 5; i++)
     returnBitset[i + 16] = tmp5bit[i];
@@ -257,12 +268,15 @@ std::bitset<32> encode_R(std::string oper, std::string rd, std::string rs, std::
 
   return returnBitset;
 }
+
+
+// 함수 이름을 fileLoad 같은거로 하는건 어떨지?
 void encode(std::string fileName)
 {
   words.clear();
   jumpIdx.clear();
   int idx = -1;
-  std::vector<ChechList> check;
+  std::vector<CheckList> check;
 
   std::ifstream fin(fileName);
   if (!fin)
@@ -301,7 +315,7 @@ void encode(std::string fileName)
     else if (oper == "j") // Jformat
     {
       program[++idx] = encode_J(oper, rd);
-      ChechList elem;
+      CheckList elem;
       elem.oper = oper;
       elem.target = con;
       elem.num = idx;
@@ -315,7 +329,7 @@ void encode(std::string fileName)
         rt = con;
         fin >> con;
         program[++idx] = encode_I(oper, rt, con, rd); // 디폴트 입력때문에 순서를 바꿈
-        ChechList elem;
+        CheckList elem;
         elem.oper = oper;
         elem.target = con;
         elem.num = idx;
