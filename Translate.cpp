@@ -29,7 +29,7 @@ int binToDec(std::bitset<T> Bin)
 	int Dec = 0;
 	for (int i = Bin.size() - 1; i >= 0; i--)
 	{
-		Dec *= 2;
+		Dec <<= 1;
 		if (Bin[i] == 1)
 			Dec += 1;
 	}
@@ -52,7 +52,7 @@ int hexToDec(std::string Hex)
 	int Dec = 0;
 	for (int i = 2; i < Hex.length(); i++)
 	{
-		Dec *= 16;
+		Dec <<= 4;
 		for (int j = 0; j < 16; j++)
 		{
 			if (str[j] == Hex[i])
