@@ -29,11 +29,56 @@ public:
 		this->RegWrite = 0;
 	}
 	
-	// 미완성. 주어진 instruction에 알맞게 field를 설정
-	void setControl(std::bitset<6> operation,std::bitset<6> function){
+	void setControl(std::bitset<6> operation){
+		if(operation == 0){
+			this->RegDst = 1;
+			this->Branch = 0;
+			this->MemRead = 0;
+			this->MemtoReg = 0;
+			this->ALUOp1 = 1;
+			this->ALUOp0 = 0;
+			this->MemWrite = 0;
+			this->ALUSrc = 0;
+			this->RegWrite = 1;
+		}
+		else if(operation == 35)
+		{
+			this->RegDst = 0;
+			this->Branch = 0;
+			this->MemRead = 1;
+			this->MemtoReg = 1;
+			this->ALUOp1 = 0;
+			this->ALUOp0 = 0;
+			this->MemWrite = 0;
+			this->ALUSrc = 1;
+			this->RegWrite = 1;
 
+		}
+		else if(operation == 43){
+			this->RegDst = 0;
+			this->Branch = 0;
+			this->MemRead = 0;
+			this->MemtoReg = 0;
+			this->ALUOp1 = 0;
+			this->ALUOp0 = 0;
+			this->MemWrite = 1;
+			this->ALUSrc = 1;
+			this->RegWrite = 0;
+
+		}
+		else if(operation == 4){
+			this->RegDst = 0;
+			this->Branch = 1;
+			this->MemRead = 0;
+			this->MemtoReg = 0;
+			this->ALUOp1 = 0;
+			this->ALUOp0 = 1;
+			this->MemWrite = 0;
+			this->ALUSrc = 0;
+			this->RegWrite = 0;
+
+		}
 	}
-
 };
 
 // control unit에서 받은 ALUOp1, ALUOp2 신호와 funct String을 바탕으로 수행할 연산의 값을 반환.
