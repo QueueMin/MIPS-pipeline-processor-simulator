@@ -9,11 +9,18 @@
 #include "Elements.cpp"
 #include "Translate.cpp"
 
-std::map<std::bitset<32>, std::bitset<32>> Mem;
-std::bitset<32> program[100];
-std::bitset<32> startPC = hexToBin("0x00400024");
+std::map<std::string, std::bitset<32>> Mem;
+std::map<std::string, std::bitset<32>> Stack;
+std::map<std::string, std::bitset<32>> program;
+std::map<std::string, std::bitset<32>> wordsAddress;
 std::map<std::string, int> words;
 std::map<std::string, int> jumpIdx; // index 0 에서부터의 거리
+
+std::bitset<32> startPC = hexToBin("0x00400024");
+std::bitset<32> startSP = hexToBin("0x7ffffe40");
+std::bitset<32> startGP = hexToBin("0x10008000");
+std::bitset<32> startData;
+
 int fileLength = -1;
 struct CheckList
 {
@@ -22,7 +29,7 @@ struct CheckList
   int num;
 };
 
-// instruction이 대상으로 하는 register의 번호를 정수로 return 
+// instruction이 대상으로 하는 register의 번호를 정수로 return
 int registerNumber(std::string registerNum)
 {
   if (registerNum == "$0" || registerNum == "$zero")
@@ -91,7 +98,6 @@ int registerNumber(std::string registerNum)
     return 31;
 }
 
-
 // j format encode를 수행
 std::bitset<32> encode_J(std::string oper, std::string con)
 {
@@ -104,18 +110,15 @@ std::bitset<32> encode_J(std::string oper, std::string con)
   for (int i = 0; i < 6; i++)
     returnBitset[i + 26] = opcode[i];
 
-  // jumpIdx map에서 현재 jump하려는 주소가 있는지 체크.
+// jumpIdx map에서 현재 jump하려는 주소가 있는지 체크.
   if (jumpIdx.find(con) != jumpIdx.end())
   {
     JumpAddress = (binToDec(startPC) / 4) + jumpIdx[con];
   } // jumpIdx에 정보가 없을시 0으로 초기화, 이후에 순회하며 재정의
   for (int i = 0; i < 26; i++)
     returnBitset[i] = JumpAddress[i];
-  std::cout << returnBitset << '\n';
   return returnBitset;
 }
-
-
 // i format encode를 수행
 std::bitset<32> encode_I(std::string oper, std::string rt, std::string con, std::string rs = "")
 {
@@ -138,8 +141,10 @@ std::bitset<32> encode_I(std::string oper, std::string rt, std::string con, std:
     returnBitset[i + 26] = opcode[i];
 
   // rt
-  for(int i = 0;i<rt.length();i++){
-    if(rt[i] == ','){
+  for (int i = 0; i < rt.length(); i++)
+  {
+    if (rt[i] == ',')
+    {
       rt.replace(rt.find(","), 1, "");
       break;
     }
@@ -148,13 +153,15 @@ std::bitset<32> encode_I(std::string oper, std::string rt, std::string con, std:
   regNum = registerNumber(rt);
   for (int i = 0; i < 5; i++)
     returnBitset[i + 16] = regNum[i];
+    
 
-  
   if (oper == "beq")
   {
     // rs
-    for(int i = 0;i<rs.length();i++){
-      if(rs[i] == ','){
+    for (int i = 0; i < rs.length(); i++)
+    {
+      if (rs[i] == ',')
+      {
         rs.replace(rs.find(","), 1, "");
         break;
       }
@@ -162,10 +169,12 @@ std::bitset<32> encode_I(std::string oper, std::string rt, std::string con, std:
     regNum = registerNumber(rs);
     for (int i = 0; i < 5; i++)
       returnBitset[i + 21] = regNum[i];
+    
     // offset은 파일 두번째 순회시에 삽입
   }
   else // con을 rs와 상수로 분리 및 저장
   {
+    tmp = "";
     for (int i = 0; i < con.length(); i++)
     {
       if (con[i] == '(')
@@ -177,7 +186,7 @@ std::bitset<32> encode_I(std::string oper, std::string rt, std::string con, std:
       returnBitset[i] = ival[i];
 
     // rs
-    rs = con.substr(tmp.length() - 1, con.length() - 1);
+    rs = con.substr(tmp.length(), con.length() - 1);
     rs.replace(rs.find("("), 1, "");
     rs.replace(rs.find(")"), 1, "");
     regNum = registerNumber(rs);
@@ -186,7 +195,6 @@ std::bitset<32> encode_I(std::string oper, std::string rt, std::string con, std:
   }
   return returnBitset;
 }
-
 
 std::bitset<32> encode_R(std::string oper, std::string rd, std::string rs, std::string rt)
 {
@@ -240,8 +248,10 @@ std::bitset<32> encode_R(std::string oper, std::string rd, std::string rs, std::
     returnBitset[i] = tmp6bit[i];
 
   // rd
-  for(int i = 0;i<rd.length();i++){
-    if(rd[i] == ','){
+  for (int i = 0; i < rd.length(); i++)
+  {
+    if (rd[i] == ',')
+    {
       rd.replace(rd.find(","), 1, "");
       break;
     }
@@ -256,8 +266,10 @@ std::bitset<32> encode_R(std::string oper, std::string rd, std::string rs, std::
     returnBitset[i + 16] = tmp5bit[i];
 
   // rs
-  for(int i = 0;i<rs.length();i++){
-    if(rs[i] == ','){
+  for (int i = 0; i < rs.length(); i++)
+  {
+    if (rs[i] == ',')
+    {
       rs.replace(rs.find(","), 1, "");
       break;
     }
@@ -269,10 +281,11 @@ std::bitset<32> encode_R(std::string oper, std::string rd, std::string rs, std::
   return returnBitset;
 }
 
-
-// 함수 이름을 fileLoad 같은거로 하는건 어떨지?
-void encode(std::string fileName)
+void fileRead(std::string fileName)
 {
+  Mem.clear();
+  Stack.clear();
+  program.clear();
   words.clear();
   jumpIdx.clear();
   int idx = -1;
@@ -296,28 +309,47 @@ void encode(std::string fileName)
       jumpIdx.insert({oper, idx + 1});
       fin >> oper >> rd;
     }
-    if (oper == ".word")
+    if (oper == ".data")
     {
-      // storeWord() 미구현
+      int Wcnt = 0;
+      startData = hexToBin(rd);
+      fin >> oper;
+      if (oper != ".word")
+      {
+        for (int i = 0; i < oper.length(); i++)
+        {
+          if (oper[i] == ':')
+          {
+            oper.replace(oper.find(":"), 1, "");
+            break;
+          }
+        }
+        
+        wordsAddress.insert({oper, startData});
+        fin >> oper;
+      }
+      fin >> rd;
+      while (oper == ".word")
+      {
+        words.insert({decToHex(binToDec(startData) + Wcnt++ * 4), stoi(rd)});
+        fin >> oper >> rd;
+      }
     }
-    else if (oper == ".data")
-    {
-      // storeData() 미구현
-    }
-    else if (oper == ".text")
+    if (oper == ".text")
     {
       startPC = hexToBin(rd);
     }
-    else if (oper == ".globl")
+    if (oper == ".globl")
     {
       // 항상 main에서 시작할것이기 때문에 생략
     }
     else if (oper == "j") // Jformat
     {
-      program[++idx] = encode_J(oper, rd);
+      idx++;
+      program.insert({decToHex(binToDec(startPC) + idx * 4), encode_J(oper, rd)});
       CheckList elem;
       elem.oper = oper;
-      elem.target = con;
+      elem.target = rd;
       elem.num = idx;
       check.push_back(elem);
     }
@@ -328,7 +360,8 @@ void encode(std::string fileName)
       {
         rt = con;
         fin >> con;
-        program[++idx] = encode_I(oper, rt, con, rd); // 디폴트 입력때문에 순서를 바꿈
+        idx++;
+        program.insert({decToHex(binToDec(startPC) + idx * 4), encode_I(oper, rt, con, rd)}); // 디폴트 입력때문에 순서를 바꿈
         CheckList elem;
         elem.oper = oper;
         elem.target = con;
@@ -336,47 +369,51 @@ void encode(std::string fileName)
         check.push_back(elem);
       }
       else
-        program[++idx] = encode_I(oper, rt, con);
+      {
+        idx++;
+        program.insert({decToHex(binToDec(startPC) + idx * 4), encode_I(oper, rt, con)});
+      }
     }
-    else // Rformat
+    else if(oper == "add" || oper == "sub" || oper == "and" || oper == "or" || oper == "slt") // Rformat
     {
       fin >> rs >> rt;
-      program[++idx] = encode_R(oper, rd, rs, rt);
+      idx++;
+      program.insert({decToHex(binToDec(startPC) + idx * 4), encode_R(oper, rd, rs, rt)});
     }
     fileLength = std::max(fileLength, idx);
   }
   while (!check.empty()) // beq offset,j address
   {
-    std::string oper = check.front().oper;
-    std::string target = check.front().target;
-    idx = check.front().num;
+    std::string oper = check.back().oper;
+    std::string target = check.back().target;
+    idx = check.back().num;
     check.pop_back();
     std::bitset<16> offset;
     std::bitset<26> address;
     if (oper == "j")
     {
-      address = binToDec(startPC) / 4 + jumpIdx[target];
+      address = (binToDec(startPC) / 4) + jumpIdx[target];
       for (int i = 0; i < 26; i++)
-        program[idx][i] = address[i];
+        program[decToHex(binToDec(startPC) + idx * 4)][i] = address[i];
     }
     else if (oper == "beq")
     {
-      offset = jumpIdx[target] * 4;
+      offset = jumpIdx[target]-idx;
       for (int i = 0; i < 16; i++)
-        program[idx][i] = offset[i];
+        program[decToHex(binToDec(startPC) + idx * 4)][i] = offset[i];
     }
   }
 }
-// int main(void)
-// {
-//   std::cout << '!';
-//   std::string fi = "t.s";
-//   encode(fi);
-//   std::cout << '\n' << startPC << '\n';
-//   for (int i = 0; i <= fileLength; i++)
-//   {
-//     std::cout << binToHex(program[i]) << ' ' << program[i] << ' ' << i << '\n';
-//   }
-//   return 1;
-//}
-#endif
+int main(void)
+{
+  std::string fi = "t.s";
+  fileRead(fi);
+  std::cout << startPC << '\n';
+  for (int i = 0; i <= fileLength; i++)
+  {
+    std::string address = decToHex(binToDec(startPC) + i * 4);
+    std::cout << address << ' ' << binToHex(program[address]) << ' ' << i << '\n';
+  }
+  return 1;
+}
+#endif 
