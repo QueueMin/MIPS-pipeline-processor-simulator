@@ -59,10 +59,10 @@ public:
 			this->IFID.PC = binToDec(this->PC)+4;
 
 			if(this->flush)
-				this->IFID.Operation = 0;
+				this->IFID.Inst = 0;
 			
 			else{
-				this->IFID.Operation = program[decToHex(binToDec(startPC) + nowIdx * 4)];
+				this->IFID.Inst = program[decToHex(binToDec(startPC) + nowIdx * 4)];
 			}
 		}
 
@@ -79,7 +79,7 @@ public:
 				this->PC = binToDec(this->PC)+4;
 			}
 		}
-		std::cout << "IFID\n" << IFID.PC << '\n' << IFID.Inst << '\n';
+		std::cout  << "\nIFID\nPC :\t\t" << IFID.PC << "\nInst :\t\t" << IFID.Inst << "\n\n";
 	}
 
 	// 시뮬레이터가 Instruction Decode를 실행.
@@ -106,24 +106,24 @@ public:
 		ControlUnit.setControl(Operation);
 
 		if(HazardUnit.stall){
-		IDEX.RegDst = ControlUnit.RegDst;
-		IDEX.MemRead = ControlUnit.MemRead;
-		IDEX.MemtoReg = ControlUnit.MemtoReg;
-		IDEX.ALUOp1 = ControlUnit.ALUOp1;
-		IDEX.ALUOp0 = ControlUnit.ALUOp0;
-		IDEX.MemWrite = ControlUnit.MemWrite;
-		IDEX.ALUSrc = ControlUnit.ALUSrc;
-		IDEX.RegWrite = ControlUnit.RegWrite;
+			IDEX.RegDst = ControlUnit.RegDst;
+			IDEX.MemRead = ControlUnit.MemRead;
+			IDEX.MemtoReg = ControlUnit.MemtoReg;
+			IDEX.ALUOp1 = ControlUnit.ALUOp1;
+			IDEX.ALUOp0 = ControlUnit.ALUOp0;
+			IDEX.MemWrite = ControlUnit.MemWrite;
+			IDEX.ALUSrc = ControlUnit.ALUSrc;
+			IDEX.RegWrite = ControlUnit.RegWrite;
 		}
 		else{
-		IDEX.RegDst = 0;
-		IDEX.MemRead = 0;
-		IDEX.MemtoReg = 0;
-		IDEX.ALUOp1 = 0;
-		IDEX.ALUOp0 = 0;
-		IDEX.MemWrite = 0;
-		IDEX.ALUSrc = 0;
-		IDEX.RegWrite = 0;
+			IDEX.RegDst = 0;
+			IDEX.MemRead = 0;
+			IDEX.MemtoReg = 0;
+			IDEX.ALUOp1 = 0;
+			IDEX.ALUOp0 = 0;
+			IDEX.MemWrite = 0;
+			IDEX.ALUSrc = 0;
+			IDEX.RegWrite = 0;
 		}
 
 		IDEX.Data1 = this->Regi[binToDec(Rs)];
@@ -154,6 +154,7 @@ public:
 		IDEX.Rs = Rs;
 		IDEX.Rt = Rt;
 		IDEX.Rd = Rd;
+		std::cout << "\nIDEX\nData1 :\t\t" << IDEX.Data1 << "\nData2 :\t\t" << IDEX.Data2 << "\nExtend :\t" << IDEX.Extend << '\n';
 	}
 
 	// 시뮬레이터가 ID_EX 레지스터 객체를 바탕으로 Operation을 Excute하거나 주소값을 계산.
@@ -208,21 +209,36 @@ public:
 			EXMEM.Rd = IDEX.Rt;
 		else
 			EXMEM.Rd = IDEX.Rd;
+		std::cout << "\nEXMEM\nALUresult :\t" << EXMEM.ALUResult << "\nData :\t\t" << EXMEM.Data2 << "\nRd :\t\t" << EXMEM.Rd << '\n';
 	}
 
 	// Memory 계층에 접근하는 작업 수행.
 	// 수행한 작업은 MEM_WB 객체에 저장.
-	// tasking...
 	void MEM()
 	{
 		MEMWB.MemtoReg = EXMEM.MemtoReg;
 		MEMWB.RegWrite = EXMEM.RegWrite;
 
-		// this->BranchAddress = EXMEM.PC;
+		if(EXMEM.MemRead == 1){
+			if (Mem.find(binToHex(EXMEM.ALUResult)) != Mem.end()){
+				MEMWB.Data = Mem[binToHex(EXMEM.ALUResult)];
+			}
+			else
+				MEMWB.Data = 0;
+		}
+		else if(EXMEM.MemWrite == 1){
+			if (Mem.find(binToHex(EXMEM.ALUResult)) != Mem.end()){
+				Mem[binToHex(EXMEM.ALUResult)] = EXMEM.Data2;
+			}
+			else{
+				Mem.insert({binToHex(EXMEM.ALUResult),EXMEM.Data2});
+			}
 
-		MEMWB.Data = 0; // lw sw 구현
+		}
+
 		MEMWB.Address = EXMEM.ALUResult;
 		MEMWB.Rd = EXMEM.Rd;
+		std::cout << "\nMEMWB\nData :\t\t" << MEMWB.Data << "\nAddress:\t" << EXMEM.ALUResult << "\nRd :\t\t" << EXMEM.Rd << '\n';
 	}
 
 	// 레지스터에 수행한 작업 결과를 저장.
@@ -238,6 +254,7 @@ public:
 		{
 			this->Regi[binToDec(MEMWB.Rd)] = data;
 		}
+		std::cout << "cycle " << nowIdx <<'\n';
 	}
 	void run(){
 		while(nowIdx<fileLength+4){
@@ -246,7 +263,7 @@ public:
 			EX();
 			ID();
 			IF();
-			if(!HazardUnit.stall) nowIdx++;
+			if(HazardUnit.stall) nowIdx++;
 			cycle++;
 		}
 	}

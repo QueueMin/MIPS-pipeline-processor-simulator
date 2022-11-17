@@ -39,7 +39,9 @@ template <size_t T>
 std::bitset<T> sltOperation(std::bitset<T> data1, std::bitset<T> data2)
 {
 	std::bitset<T> tmp;
-	if(data1 < data2) tmp = 1;
+	int i1 = binToDec(data1);
+	int i2 = binToDec(data2);
+	if(i1 < i2) tmp = 1;
 	else tmp = 0;
 	return tmp;
 }

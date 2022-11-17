@@ -9,7 +9,6 @@ class IF_ID
 public:
 	std::bitset<32> PC = 0;
 	std::bitset<32> Inst = 0;
-	std::bitset<32> Operation;
 	
 };
 
