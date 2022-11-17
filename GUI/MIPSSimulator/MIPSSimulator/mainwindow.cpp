@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "test.cpp"
+#include "FileEncode.cpp"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -14,11 +14,15 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::loadFile(){
+void MainWindow::on_openButton_clicked()
+{
+    QString fileName = QFileDialog::getOpenFileName(this);
+    encode(fileName.toStdString());
+    QTableWidgetItem* s = new QTableWidgetItem;
+    s->setText("SEX");
+    s->text();
+    ui->instructionTable->clearContents();
+    ui->instructionTable->setItem(0, 0, s);
 
 }
 
-void MainWindow::toTest(){
-    ui->pushButton_3->setText("YEE");
-    ui->pushButton_3->setVisible(0);
-}
