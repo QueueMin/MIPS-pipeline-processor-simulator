@@ -18,11 +18,21 @@ void MainWindow::on_openButton_clicked()
 {
     QString fileName = QFileDialog::getOpenFileName(this);
     encode(fileName.toStdString());
-    QTableWidgetItem* s = new QTableWidgetItem;
-    s->setText("SEX");
-    s->text();
     ui->instructionTable->clearContents();
-    ui->instructionTable->setItem(0, 0, s);
+
+
+    for (int i = 0; i < 100; i++){
+        QTableWidgetItem* pc = new QTableWidgetItem;
+        QTableWidgetItem* inst = new QTableWidgetItem;
+        pc->setText(QString::fromStdString(binToHex(startPC)));
+        inst->setText(QString::fromStdString(binToHex(program[i])));
+
+        ui->instructionTable->setItem(i, 0, pc);
+        ui->instructionTable->setItem(i, 1, inst);
+
+        startPC = (binToDec(startPC)+4);
+    }
+
 
 }
 
