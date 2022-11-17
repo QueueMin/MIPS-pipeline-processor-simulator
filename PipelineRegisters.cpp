@@ -9,21 +9,8 @@ class IF_ID
 public:
 	std::bitset<32> PC = 0;
 	std::bitset<32> Inst = 0;
-	std::bitset<6> Operation;
-	std::bitset<5> Rs;
-	std::bitset<5> Rt;
-	std::bitset<5> Rd;
-	std::bitset<5> Shamt;
-	std::bitset<6> Function;
-	std::bitset<16> Extend;
-
-	bool write = 1; // write 신호. 기본적으로 쓸 수 있는 상태로 설정.
-
-	// IF_ID 레지스터 객체의 write를 설정
-	void setWrite(bool signal)
-	{
-		this->write = signal;
-	}
+	std::bitset<32> Operation;
+	
 };
 
 // ID/EX 레지스터 클래스. Fetch한 Instruction에 알맞는 ControlSignal들을 받아서 저장하고,
@@ -32,7 +19,6 @@ class ID_EX
 {
 public:
 	bool RegDst = 0;
-	bool Branch = 0;
 	bool MemRead = 0;
 	bool MemtoReg = 0;
 	bool ALUOp1 = 0;
@@ -55,13 +41,11 @@ public:
 class EX_MEM
 {
 public:
-	bool Branch = 0;
 	bool MemRead = 0;
 	bool MemtoReg = 0;
 	bool MemWrite = 0;
 	bool RegWrite = 0;
 
-	// bool Zero = 0;
 	std::bitset<32> ALUResult = 0;
 	std::bitset<32> Data2 = 0;
 

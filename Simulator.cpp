@@ -1,8 +1,10 @@
+#include <iostream>
 #include <string>
 #include <bitset>
 #include <map>
 #include "FileEncode.cpp"
 #include "ControlUnit.cpp"
+#include "Operations.cpp"
 #include "ForwardingUnit.cpp"
 #include "HazardDetectionUnit.cpp"
 #include "Translate.cpp"
@@ -15,68 +17,96 @@ public:
 	ForwardingUnit ForwardUint;
 	HazardDetectionUnit HazardUnit;
 	ControlUnit ControlUnit;
+
+	std::bitset<32> branchAddress;
+	std::bitset<32> jumpAddress;
+	
 	IF_ID IFID;
 	ID_EX IDEX;
 	EX_MEM EXMEM;
 	MEM_WB MEMWB;
 
 	std::bitset<32> PC; // 현재
-	std::bitset<32> NextPC;
-	std::bitset<32> BranchAddress;
 	bool PCSrc;
-	int nowIdx;
+	bool flush;
+	bool Jump;
+	int nowIdx=0;
+	int cycle;
 	std::bitset<32> Regi[32];
 
-	Simulator(std::string fileName)
+	Simulator()
 	{
 		// 생성 시 입력받은 PC를 저장하고 각 레지스터를 초기화.
-		encode(fileName);
 		this->PC = startPC;
 		this->PCSrc = 0;
 		this->nowIdx = 0;
+		this->cycle = 0;
 		for (int i = 0; i < 32; i++)
 		{
 			this->Regi[i].reset();
 		}
+		this->Regi[28] = hexToBin("0x10008000");
+		this->Regi[29] = hexToBin("0x7ffffe40");
+	}
+	void fileLoad(std::string fileName){
+		fileRead(fileName);
 	}
 
 	// 시뮬레이터가 Instruction Fetch를 실행. 실행한 결과를 주소값을 받은 IF/ID register 객체에 저장한다.
 	void IF()
 	{
-		std::bitset<32> tmpPC;							// PC를 다루기 위한 변수 tmpPC
-		tmpPC = this->PC;										// 현재 simulator 객체가 가지고 있는 PC를 받아와서 10진수로 변환
-		this->NextPC = binToDec(tmpPC) + 4; // 변환된 10진수 형식의 PC에 4를 더한 후 16진수로 변환,
+		if(HazardUnit.IFIDWrite == 1){
+			this->IFID.PC = binToDec(this->PC)+4;
 
-		//
-		if (this->PCSrc == 0)
-		{
-			this->PC = this->NextPC;
-		}
-		else
-		{
-			this->PC = this->BranchAddress;
+			if(this->flush)
+				this->IFID.Operation = 0;
+			
+			else{
+				this->IFID.Operation = program[decToHex(binToDec(startPC) + nowIdx * 4)];
+			}
 		}
 
-		//IFID.PC = bintoDec(tmpPC) + 4; 
-		// IFID.inst = encode(op, rs, rt, rd);
-		for(int i= 0;i<6;i++) IFID.Operation[i] = IFID.Inst[i];
-		for(int i= 0;i<5;i++) IFID.Rs[i] = IFID.Inst[6+i];
-		for(int i= 0;i<5;i++) IFID.Rt[i] = IFID.Inst[11+i];
-		for(int i= 0;i<5;i++) IFID.Rd[i] = IFID.Inst[16+i];
-		for(int i= 0;i<5;i++) IFID.Shamt[i] = IFID.Inst[21+i];
-		for(int i= 0;i<6;i++) IFID.Function[i] = IFID.Inst[26+i];
-		for(int i= 0;i<15;i++) IFID.Extend[i] = IFID.Inst[16+i];
+		if(this->HazardUnit.PCWrite == 1){
+			if (this->PCSrc == 1)
+			{
+				this->PC = this->branchAddress;
+			}
+			else if(this->ControlUnit.Jump == 1)
+			{
+				this->PC = this->jumpAddress;
+			}
+			else{
+				this->PC = binToDec(this->PC)+4;
+			}
+		}
+		std::cout << "IFID\n" << IFID.PC << '\n' << IFID.Inst << '\n';
 	}
 
 	// 시뮬레이터가 Instruction Decode를 실행.
 	//  Instruction의 OPcode에 따라 control unit을 조정한 뒤, 주소값을 받은 ID_EX 레지스터 객체에 해당 값들을 저장한다.
 	void ID()
 	{
-		HazardUnit.detect(IFID,IDEX);
-		ControlUnit.setControl(IFID.Operation,IFID.Function);
+		std::bitset<6> Operation;
+		std::bitset<5> Rs;
+		std::bitset<5> Rt;
+		std::bitset<5> Rd;
+		std::bitset<5> Shamt=0;
+		std::bitset<6> Function;
+		std::bitset<16> Extend;
+		std::bitset<32> JumpDirection;
+		for(int i = 0;i<6;i++) Operation[i] = this->IFID.Inst[i+26];
+		for(int i = 0;i<5;i++) Rs[i] = this->IFID.Inst[i+21];
+		for(int i = 0;i<5;i++) Rt[i] = this->IFID.Inst[i+16];
+		for(int i = 0;i<5;i++) Rd[i] = this->IFID.Inst[i+11];
+		for(int i = 0;i<6;i++) Function[i] = this->IFID.Inst[i];
+		for(int i = 0;i<16;i++) Extend[i] = this->IFID.Inst[i];
+		for(int i = 0;i<26;i++) JumpDirection[i+2] = this->IFID.Inst[i]; // shift 2 
 
+		HazardUnit.detect(IFID,IDEX);
+		ControlUnit.setControl(Operation);
+
+		if(HazardUnit.stall){
 		IDEX.RegDst = ControlUnit.RegDst;
-		IDEX.Branch = ControlUnit.Branch;
 		IDEX.MemRead = ControlUnit.MemRead;
 		IDEX.MemtoReg = ControlUnit.MemtoReg;
 		IDEX.ALUOp1 = ControlUnit.ALUOp1;
@@ -84,13 +114,46 @@ public:
 		IDEX.MemWrite = ControlUnit.MemWrite;
 		IDEX.ALUSrc = ControlUnit.ALUSrc;
 		IDEX.RegWrite = ControlUnit.RegWrite;
+		}
+		else{
+		IDEX.RegDst = 0;
+		IDEX.MemRead = 0;
+		IDEX.MemtoReg = 0;
+		IDEX.ALUOp1 = 0;
+		IDEX.ALUOp0 = 0;
+		IDEX.MemWrite = 0;
+		IDEX.ALUSrc = 0;
+		IDEX.RegWrite = 0;
+		}
 
-		IDEX.Data1 = this->Regi[binToDec(IFID.Rs)];
-		IDEX.Data2 = this->Regi[binToDec(IFID.Rt)];
+		IDEX.Data1 = this->Regi[binToDec(Rs)];
+		IDEX.Data2 = this->Regi[binToDec(Rt)];
+		IDEX.Extend = signExtention(Extend);
 
-		IDEX.Extend = signExtention(IFID.Extend);
-		IDEX.Rt = IFID.Rt;
-		IDEX.Rd = IFID.Rd;
+		this->jumpAddress = JumpDirection;
+		this->branchAddress = binToDec(IFID.PC) + (int)binToDec(IDEX.Extend)<<2;
+
+		if(Operation == 2){ // j instruction
+			this->flush = 1;
+			this->PCSrc = 0;
+			this->Jump = 1;
+		}
+		else if(IDEX.Data1 == IDEX.Data2 && ControlUnit.Branch){ // beq instruction
+			this->flush = 1;
+			this->PCSrc = 1;
+			this->Jump = 0;
+		}
+		else{
+			this->flush = 0;
+			this->PCSrc = 0;
+			this->Jump = 0;
+		}
+
+		//레지스터에 저장은 WB()
+		IDEX.Function = Function;
+		IDEX.Rs = Rs;
+		IDEX.Rt = Rt;
+		IDEX.Rd = Rd;
 	}
 
 	// 시뮬레이터가 ID_EX 레지스터 객체를 바탕으로 Operation을 Excute하거나 주소값을 계산.
@@ -100,16 +163,11 @@ public:
 	{
 		ForwardUint.setForward(IDEX,EXMEM,MEMWB);
 
-		EXMEM.Branch = IDEX.Branch;
 		EXMEM.MemRead = IDEX.MemRead;
 		EXMEM.MemtoReg = IDEX.MemtoReg;
 		EXMEM.MemWrite = IDEX.MemWrite;
 		EXMEM.RegWrite = IDEX.RegWrite;
 
-		// int tmp = hexToDec(IDEX.PC) + binToDec(IDEX.Extend + "00");
-		// EXMEM.PC = decToHex(tmp);
-
-		bool Zero=0;
 		std::bitset<32> data;
 		std::bitset<32> ALUin1;
 		std::bitset<32> ALUin2;
@@ -120,21 +178,30 @@ public:
 		
 		if(ForwardUint.forwardB == 0) ALUin2 = IDEX.Data2;
 		else if(ForwardUint.forwardB == 1) ALUin2 = ForwardUint.WBData;
-		else if(ForwardUint.forwardB == 2) ALUin2 = ForwardUint.MEMData;
-		// else if() ALUin2 = IDEX.Extend;
-
-		if (ALUin1 == ALUin2)
-			Zero = 1;
-		else
-			Zero = 0;
-
-		if(Zero == 1 && IDEX.Branch == 1) PCSrc =1;
+		else if(ForwardUint.forwardB == 2) ALUin2 = ForwardUint.MEMData;		
+		if (IDEX.MemRead || IDEX.MemWrite) ALUin2 = IDEX.Extend;
 
 		int func = ALUControl(IDEX.Function, IDEX.ALUOp1, IDEX.ALUOp0);
-		if (func == 0)
+		if (func == 0) // and
 		{
-			EXMEM.ALUResult = 0;
-		} // AND OR 구현 ,16진수 반환
+			EXMEM.ALUResult = andOperation(ALUin1, ALUin2);
+		}
+		else if(func == 1) // or
+		{
+			EXMEM.ALUResult = orOperation(ALUin1, ALUin2);
+		}
+		else if(func == 2) // add
+		{
+			EXMEM.ALUResult = addOperation(ALUin1, ALUin2);
+		}
+		else if(func == 6) // sub
+		{
+			EXMEM.ALUResult = subOperation(ALUin1, ALUin2);
+		}
+		else if(func == 7) // slt
+		{
+			EXMEM.ALUResult = sltOperation(ALUin1, ALUin2);
+		}
 		EXMEM.Data2 = IDEX.Data2;
 
 		if (IDEX.RegDst == 0)
@@ -145,6 +212,7 @@ public:
 
 	// Memory 계층에 접근하는 작업 수행.
 	// 수행한 작업은 MEM_WB 객체에 저장.
+	// tasking...
 	void MEM()
 	{
 		MEMWB.MemtoReg = EXMEM.MemtoReg;
@@ -178,7 +246,8 @@ public:
 			EX();
 			ID();
 			IF();
-			if(!HazardUnit.stool) nowIdx++;
+			if(!HazardUnit.stall) nowIdx++;
+			cycle++;
 		}
 	}
 };

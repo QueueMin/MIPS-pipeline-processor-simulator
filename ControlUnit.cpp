@@ -14,6 +14,7 @@ public:
 	bool MemWrite;
 	bool ALUSrc;
 	bool RegWrite;
+	bool Jump;
 
 	// ControlUnit 객체의 field들을 초기화하고
 	ControlUnit()
@@ -27,10 +28,13 @@ public:
 		this->MemWrite = 0;
 		this->ALUSrc = 0;
 		this->RegWrite = 0;
+		this->Jump = 0;
 	}
-	
-	void setControl(std::bitset<6> operation){
-		if(operation == 0){
+
+	void setControl(std::bitset<6> operation)
+	{
+		if (operation == 0)
+		{
 			this->RegDst = 1;
 			this->Branch = 0;
 			this->MemRead = 0;
@@ -40,8 +44,9 @@ public:
 			this->MemWrite = 0;
 			this->ALUSrc = 0;
 			this->RegWrite = 1;
+			this->Jump = 0;
 		}
-		else if(operation == 35)
+		else if (operation == 35)
 		{
 			this->RegDst = 0;
 			this->Branch = 0;
@@ -52,9 +57,10 @@ public:
 			this->MemWrite = 0;
 			this->ALUSrc = 1;
 			this->RegWrite = 1;
-
+			this->Jump = 0;
 		}
-		else if(operation == 43){
+		else if (operation == 43)
+		{
 			this->RegDst = 0;
 			this->Branch = 0;
 			this->MemRead = 0;
@@ -64,9 +70,10 @@ public:
 			this->MemWrite = 1;
 			this->ALUSrc = 1;
 			this->RegWrite = 0;
-
+			this->Jump = 0;
 		}
-		else if(operation == 4){
+		else if (operation == 4)
+		{
 			this->RegDst = 0;
 			this->Branch = 1;
 			this->MemRead = 0;
@@ -76,7 +83,20 @@ public:
 			this->MemWrite = 0;
 			this->ALUSrc = 0;
 			this->RegWrite = 0;
-
+			this->Jump = 0;
+		}
+		else if (operation == 2)
+		{
+			this->RegDst = 0;
+			this->Branch = 0;
+			this->MemRead = 0;
+			this->MemtoReg = 0;
+			this->ALUOp1 = 0;
+			this->ALUOp0 = 0;
+			this->MemWrite = 0;
+			this->ALUSrc = 0;
+			this->RegWrite = 0;
+			this->Jump = 1;
 		}
 	}
 };

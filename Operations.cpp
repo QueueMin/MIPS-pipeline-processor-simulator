@@ -34,4 +34,13 @@ std::bitset<T> andOperation(std::bitset<T> data1, std::bitset<T> data2)
 	std::bitset<T> tmp = data1 & data2;
 	return tmp;
 }
+
+template <size_t T>
+std::bitset<T> sltOperation(std::bitset<T> data1, std::bitset<T> data2)
+{
+	std::bitset<T> tmp;
+	if(data1 < data2) tmp = 1;
+	else tmp = 0;
+	return tmp;
+}
 #endif

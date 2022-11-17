@@ -404,16 +404,16 @@ void fileRead(std::string fileName)
     }
   }
 }
-int main(void)
-{
-  std::string fi = "t.s";
-  fileRead(fi);
-  std::cout << startPC << '\n';
-  for (int i = 0; i <= fileLength; i++)
-  {
-    std::string address = decToHex(binToDec(startPC) + i * 4);
-    std::cout << address << ' ' << binToHex(program[address]) << ' ' << i << '\n';
-  }
-  return 1;
-}
+// int main(void)
+// {
+//   std::string fi = "t.s";
+//   fileRead(fi);
+//   std::cout << startPC << '\n';
+//   for (int i = 0; i <= fileLength; i++)
+//   {
+//     std::string address = decToHex(binToDec(startPC) + i * 4);
+//     std::cout << address << ' ' << binToHex(program[address]) << ' ' << i << '\n';
+//   }
+//   return 1;
+// }
 #endif 

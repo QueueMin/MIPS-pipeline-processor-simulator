@@ -4,6 +4,8 @@
 int main(void)
 {
 	std::string fileName = "test.s";
-	Simulator simulator(fileName);
+	Simulator simulator;
+	simulator.fileLoad(fileName);
+	simulator.run();
 	return 0;
 }
