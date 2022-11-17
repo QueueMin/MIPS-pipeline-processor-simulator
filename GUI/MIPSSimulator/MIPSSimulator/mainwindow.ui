@@ -51,7 +51,7 @@
     <item>
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="openButton">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -74,8 +74,8 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset theme="folder-open">
-          <normaloff>images/open.png</normaloff>images/open.png</iconset>
+         <iconset resource="Images.qrc">
+          <normaloff>:/Images/images/open.png</normaloff>:/Images/images/open.png</iconset>
         </property>
        </widget>
       </item>
@@ -93,7 +93,7 @@
        </spacer>
       </item>
       <item row="0" column="2">
-       <widget class="QPushButton" name="pushButton_2">
+       <widget class="QPushButton" name="resetButton">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -116,13 +116,13 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset theme="folder-open">
-          <normaloff>images/open.png</normaloff>images/open.png</iconset>
+         <iconset resource="Images.qrc">
+          <normaloff>:/Images/images/cut.png</normaloff>:/Images/images/cut.png</iconset>
         </property>
        </widget>
       </item>
       <item row="0" column="3">
-       <widget class="QPushButton" name="pushButton_3">
+       <widget class="QPushButton" name="testButton">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -145,7 +145,8 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset theme="application-exit"/>
+         <iconset theme="application-exit">
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -213,6 +214,9 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="focusPolicy">
+             <enum>Qt::NoFocus</enum>
+            </property>
             <property name="contextMenuPolicy">
              <enum>Qt::NoContextMenu</enum>
             </property>
@@ -221,6 +225,9 @@
             </property>
             <property name="editTriggers">
              <set>QAbstractItemView::NoEditTriggers</set>
+            </property>
+            <property name="dragDropOverwriteMode">
+             <bool>false</bool>
             </property>
             <property name="selectionBehavior">
              <enum>QAbstractItemView::SelectRows</enum>
@@ -244,7 +251,7 @@
              <bool>false</bool>
             </property>
             <property name="rowCount">
-             <number>40</number>
+             <number>100</number>
             </property>
             <attribute name="horizontalHeaderVisible">
              <bool>true</bool>
@@ -320,6 +327,66 @@
             <row/>
             <row/>
             <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
             <column>
              <property name="text">
               <string>PC</string>
@@ -352,6 +419,9 @@ hr { height: 1px; border-width: 0; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; font-weight:600; color:#000000; background-color:#ffffff;&quot;&gt;HI      &lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; color:#000000; background-color:#ffffff;&quot;&gt; = 0&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; font-weight:600; color:#000000; background-color:#ffffff;&quot;&gt;LO      &lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; color:#000000; background-color:#ffffff;&quot;&gt; = 0&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; font-weight:600; color:#000000; background-color:#ffffff;&quot;&gt;R0  [r0]&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; color:#000000; background-color:#ffffff;&quot;&gt; = 0&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; font-weight:600; color:#000000; background-color:#ffffff;&quot;&gt;R1  [at]&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; color:#000000; background-color:#ffffff;&quot;&gt; = 0&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; font-weight:600; color:#000000; background-color:#ffffff;&quot;&gt;R2  [v0]&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; color:#000000; background-color:#ffffff;&quot;&gt; = 0&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; font-weight:600; color:#000000; background-color:#ffffff;&quot;&gt;R3  [v1]&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; color:#000000; background-color:#ffffff;&quot;&gt; = 0&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; font-weight:600; color:#000000; background-color:#ffffff;&quot;&gt;R4  [a0]&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; color:#000000; background-color:#ffffff;&quot;&gt; = 0&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; font-weight:600; color:#000000; background-color:#ffffff;&quot;&gt;R5  [a1]&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; color:#000000; background-color:#ffffff;&quot;&gt; = 0&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; font-weight:600; color:#000000; background-color:#ffffff;&quot;&gt;R6  [a2]&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; color:#000000; background-color:#ffffff;&quot;&gt; = 0&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; font-weight:600; color:#000000; background-color:#ffffff;&quot;&gt;R7  [a3]&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; color:#000000; background-color:#ffffff;&quot;&gt; = 0&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; font-weight:600; color:#000000; background-color:#ffffff;&quot;&gt;R8  [t0]&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; color:#000000; background-color:#ffffff;&quot;&gt; = 0&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; font-weight:600; color:#000000; background-color:#ffffff;&quot;&gt;R9  [t1]&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; color:#000000; background-color:#ffffff;&quot;&gt; = 0&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; font-weight:600; color:#000000; background-color:#ffffff;&quot;&gt;R10 [t2]&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; color:#000000; background-color:#ffffff;&quot;&gt; = 0&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; font-weight:600; color:#000000; background-color:#ffffff;&quot;&gt;R11 [t3]&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; color:#000000; background-color:#ffffff;&quot;&gt; = 0&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; font-weight:600; color:#000000; background-color:#ffffff;&quot;&gt;R12 [t4]&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; color:#000000; background-color:#ffffff;&quot;&gt; = 0&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; font-weight:600; color:#000000; background-color:#ffffff;&quot;&gt;R13 [t5]&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; color:#000000; background-color:#ffffff;&quot;&gt; = 0&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; font-weight:600; color:#000000; background-color:#ffffff;&quot;&gt;R14 [t6]&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; color:#000000; background-color:#ffffff;&quot;&gt; = 0&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; font-weight:600; color:#000000; background-color:#ffffff;&quot;&gt;R15 [t7]&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; color:#000000; background-color:#ffffff;&quot;&gt; = 0&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; font-weight:600; color:#000000; background-color:#ffffff;&quot;&gt;R16 [s0]&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; color:#000000; background-color:#ffffff;&quot;&gt; = 0&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; font-weight:600; color:#000000; background-color:#ffffff;&quot;&gt;R17 [s1]&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; color:#000000; background-color:#ffffff;&quot;&gt; = 0&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; font-weight:600; color:#000000; background-color:#ffffff;&quot;&gt;R18 [s2]&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; color:#000000; background-color:#ffffff;&quot;&gt; = 0&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; font-weight:600; color:#000000; background-color:#ffffff;&quot;&gt;R19 [s3]&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; color:#000000; background-color:#ffffff;&quot;&gt; = 0&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; font-weight:600; color:#000000; background-color:#ffffff;&quot;&gt;R20 [s4]&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; color:#000000; background-color:#ffffff;&quot;&gt; = 0&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; font-weight:600; color:#000000; background-color:#ffffff;&quot;&gt;R21 [s5]&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; color:#000000; background-color:#ffffff;&quot;&gt; = 0&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; font-weight:600; color:#000000; background-color:#ffffff;&quot;&gt;R22 [s6]&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; color:#000000; background-color:#ffffff;&quot;&gt; = 0&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; font-weight:600; color:#000000; background-color:#ffffff;&quot;&gt;R23 [s7]&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; color:#000000; background-color:#ffffff;&quot;&gt; = 0&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; font-weight:600; color:#000000; background-color:#ffffff;&quot;&gt;R24 [t8]&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; color:#000000; background-color:#ffffff;&quot;&gt; = 0&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; font-weight:600; color:#000000; background-color:#ffffff;&quot;&gt;R25 [t9]&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; color:#000000; background-color:#ffffff;&quot;&gt; = 0&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; font-weight:600; color:#000000; background-color:#ffffff;&quot;&gt;R26 [k0]&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; color:#000000; background-color:#ffffff;&quot;&gt; = 0&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; font-weight:600; color:#000000; background-color:#ffffff;&quot;&gt;R27 [k1]&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; color:#000000; background-color:#ffffff;&quot;&gt; = 0&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; font-weight:600; color:#000000; background-color:#ffffff;&quot;&gt;R28 [gp]&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; color:#000000; background-color:#ffffff;&quot;&gt; = 10008000&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; font-weight:600; color:#000000; background-color:#ffffff;&quot;&gt;R29 [sp]&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; color:#000000; background-color:#ffffff;&quot;&gt; = 7ffffe40&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; font-weight:600; color:#000000; background-color:#ffffff;&quot;&gt;R30 [s8]&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; color:#000000; background-color:#ffffff;&quot;&gt; = 0&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; font-weight:600; color:#000000; background-color:#ffffff;&quot;&gt;R31 [ra]&lt;/span&gt;&lt;span style=&quot; font-family:'Courier'; font-size:10pt; color:#000000; background-color:#ffffff;&quot;&gt; = 0&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="textInteractionFlags">
+             <set>Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
             </property>
            </widget>
           </item>
@@ -403,26 +473,12 @@ hr { height: 1px; border-width: 0; }
   <tabstop>graphicMIPS</tabstop>
   <tabstop>instructionTable</tabstop>
  </tabstops>
- <resources/>
- <connections>
-  <connection>
-   <sender>pushButton_3</sender>
-   <signal>clicked(bool)</signal>
-   <receiver>MainWindow</receiver>
-   <slot>toTest()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>72</x>
-     <y>54</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>196</x>
-     <y>28</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <resources>
+  <include location="Images.qrc"/>
+ </resources>
+ <connections/>
  <slots>
   <slot>toTest()</slot>
+  <slot>loadFile()</slot>
  </slots>
 </ui>
