@@ -2,7 +2,8 @@
 #include <string>
 #include <bitset>
 #include <map>
-#include "FileEncode.cpp"
+
+#include "MemoryManager.cpp"
 #include "ControlUnit.cpp"
 #include "Operations.cpp"
 #include "ForwardingUnit.cpp"
@@ -14,7 +15,9 @@
 class Simulator
 {
 public:
-	ForwardingUnit ForwardUint;
+	MemoryManager MManager;
+
+	ForwardingUnit ForwardUnit;
 	HazardDetectionUnit HazardUnit;
 	ControlUnit ControlUnit;
 
@@ -37,7 +40,7 @@ public:
 	Simulator()
 	{
 		// 생성 시 입력받은 PC를 저장하고 각 레지스터를 초기화.
-		this->PC = startPC;
+		this->PC = MManager.getStartPC();
 		this->PCSrc = 0;
 		this->nowIdx = 0;
 		this->cycle = 0;
@@ -48,8 +51,9 @@ public:
 		this->Regi[28] = hexToBin("0x10008000");
 		this->Regi[29] = hexToBin("0x7ffffe40");
 	}
+
 	void fileLoad(std::string fileName){
-		fileRead(fileName);
+		this->MManager.fileRead(fileName);
 	}
 
 	// 시뮬레이터가 Instruction Fetch를 실행. 실행한 결과를 주소값을 받은 IF/ID register 객체에 저장한다.
@@ -62,7 +66,7 @@ public:
 				this->IFID.Inst = 0;
 			
 			else{
-				this->IFID.Inst = program[decToHex(binToDec(startPC) + nowIdx * 4)];
+				this->IFID.Inst = MManager.getProgram()[decToHex(binToDec(MManager.getStartPC()) + nowIdx * 4)];
 			}
 		}
 
@@ -159,10 +163,9 @@ public:
 
 	// 시뮬레이터가 ID_EX 레지스터 객체를 바탕으로 Operation을 Excute하거나 주소값을 계산.
 	// 이때 각 값들을 해당 Operation에서 사용하던 안하던 일단 계산은 하는 식으로 구현하는게 목표.
-	// 따라서 코드 재 확인 필요.
 	void EX()
 	{
-		ForwardUint.setForward(IDEX,EXMEM,MEMWB);
+		ForwardUnit.setForward(IDEX,EXMEM,MEMWB);
 
 		EXMEM.MemRead = IDEX.MemRead;
 		EXMEM.MemtoReg = IDEX.MemtoReg;
@@ -173,13 +176,13 @@ public:
 		std::bitset<32> ALUin1;
 		std::bitset<32> ALUin2;
 		
-		if(ForwardUint.forwardA == 0) ALUin1 = IDEX.Data1;
-		else if(ForwardUint.forwardA == 1) ALUin1 = ForwardUint.WBData;
-		else if(ForwardUint.forwardA == 2) ALUin1 = ForwardUint.MEMData;
+		if(ForwardUnit.forwardA == 0) ALUin1 = IDEX.Data1;
+		else if(ForwardUnit.forwardA == 1) ALUin1 = ForwardUnit.WBData;
+		else if(ForwardUnit.forwardA == 2) ALUin1 = ForwardUnit.MEMData;
 		
-		if(ForwardUint.forwardB == 0) ALUin2 = IDEX.Data2;
-		else if(ForwardUint.forwardB == 1) ALUin2 = ForwardUint.WBData;
-		else if(ForwardUint.forwardB == 2) ALUin2 = ForwardUint.MEMData;		
+		if(ForwardUnit.forwardB == 0) ALUin2 = IDEX.Data2;
+		else if(ForwardUnit.forwardB == 1) ALUin2 = ForwardUnit.WBData;
+		else if(ForwardUnit.forwardB == 2) ALUin2 = ForwardUnit.MEMData;		
 		if (IDEX.MemRead || IDEX.MemWrite) ALUin2 = IDEX.Extend;
 
 		int func = ALUControl(IDEX.Function, IDEX.ALUOp1, IDEX.ALUOp0);
@@ -219,19 +222,22 @@ public:
 		MEMWB.MemtoReg = EXMEM.MemtoReg;
 		MEMWB.RegWrite = EXMEM.RegWrite;
 
-		if(EXMEM.MemRead == 1){
-			if (Mem.find(binToHex(EXMEM.ALUResult)) != Mem.end()){
-				MEMWB.Data = Mem[binToHex(EXMEM.ALUResult)];
+		if (EXMEM.MemRead == 1){
+			// 
+			if (MManager.getMem()->find(binToHex(EXMEM.ALUResult)) != MManager.getMem()->end()){
+				MEMWB.Data = MManager.getMemVal(binToHex(EXMEM.ALUResult));
 			}
 			else
 				MEMWB.Data = 0;
 		}
 		else if(EXMEM.MemWrite == 1){
-			if (Mem.find(binToHex(EXMEM.ALUResult)) != Mem.end()){
-				Mem[binToHex(EXMEM.ALUResult)] = EXMEM.Data2;
+			// 쓰려고 하는 메모리의 주소에 값이 이미 존재한다면 해당 메모리 주소의 값을 수정
+			if (MManager.getMem()->find(binToHex(EXMEM.ALUResult)) != MManager.getMem()->end()){
+				MManager.setMem(binToHex(EXMEM.ALUResult), EXMEM.Data2);
 			}
+			// 이외의 경우 map Mem에 주소값과 해당하는 데이터를 저장 
 			else{
-				Mem.insert({binToHex(EXMEM.ALUResult),EXMEM.Data2});
+				MManager.getMem()->insert({binToHex(EXMEM.ALUResult),EXMEM.Data2});
 			}
 
 		}
@@ -256,8 +262,9 @@ public:
 		}
 		std::cout << "cycle " << nowIdx <<'\n';
 	}
+
 	void run(){
-		while(nowIdx<fileLength+4){
+		while(nowIdx < this->MManager.getFileLength()+4){
 			WB();
 			MEM();
 			EX();
