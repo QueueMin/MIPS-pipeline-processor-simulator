@@ -46,7 +46,7 @@ public:
 			this->RegWrite = 1;
 			this->Jump = 0;
 		}
-		else if (operation == 35)
+		else if (operation == OP_LW)
 		{
 			this->RegDst = 0;
 			this->Branch = 0;
@@ -59,7 +59,7 @@ public:
 			this->RegWrite = 1;
 			this->Jump = 0;
 		}
-		else if (operation == 43)
+		else if (operation == OP_SW)
 		{
 			this->RegDst = 0;
 			this->Branch = 0;
@@ -72,7 +72,7 @@ public:
 			this->RegWrite = 0;
 			this->Jump = 0;
 		}
-		else if (operation == 4)
+		else if (operation == OP_BEQ)
 		{
 			this->RegDst = 0;
 			this->Branch = 1;
@@ -85,7 +85,7 @@ public:
 			this->RegWrite = 0;
 			this->Jump = 0;
 		}
-		else if (operation == 2)
+		else if (operation == OP_J)
 		{
 			this->RegDst = 0;
 			this->Branch = 0;
@@ -110,15 +110,15 @@ int ALUControl(std::bitset<6> funct, bool ALUOp1, bool ALUOp0)
 		return ALU_SUB;
 	else
 	{
-		if (funct == 32)
+		if (funct == FUNCT_ADD)
 			return ALU_ADD;
-		else if (funct == 34)
+		else if (funct == FUNCT_SUB)
 			return ALU_SUB;
-		else if (funct == 36)
+		else if (funct == FUNCT_AND)
 			return ALU_AND;
-		else if (funct == 37)
+		else if (funct == FUNCT_OR)
 			return ALU_OR;
-		else if (funct == 40)
+		else if (funct == FUNCT_SLT)
 			return ALU_SLT;
 	}
 }
