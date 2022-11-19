@@ -1,3 +1,6 @@
+#ifndef CONTROLUNIT_INCLUDED
+#define CONTROLUNIT_INCLUDED
+
 #include <bitset>
 #include "Elements.cpp"
 
@@ -122,3 +125,5 @@ int ALUControl(std::bitset<6> funct, bool ALUOp1, bool ALUOp0)
 			return ALU_SLT;
 	}
 }
+
+#endif
