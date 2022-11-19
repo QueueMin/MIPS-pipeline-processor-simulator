@@ -3,7 +3,7 @@
 #include <string>
 #include <bitset>
 
-// IF/ID 레지스터 클래스. PC와 instruction을 저장하며 write가 1일때만 쓸 수 있도록 한다.
+// IF/ID 레지스터 클래스. PC와 instruction을 저장한다.
 class IF_ID
 {
 public:
