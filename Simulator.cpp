@@ -263,18 +263,7 @@ public:
 		std::cout << "cycle " << nowIdx <<'\n';
 	}
 
-	void run(){
-		while(nowIdx < this->MManager.getFileLength()+4){
-			WB();
-			MEM();
-			EX();
-			ID();
-			IF();
-			if(HazardUnit.notStall) nowIdx++;
-			cycle++;
-		}
-	}
-
+	// 사이클을 한번 실행. WB부터 IF까지.
 	void runSingleCycle(){
 		WB();
 		MEM();
@@ -283,6 +272,13 @@ public:
 		IF();
 		if(HazardUnit.notStall) nowIdx++;
 		cycle++;
-
 	}
+
+	void run(){
+		while(nowIdx < this->MManager.getFileLength()+4){
+			runSingleCycle();
+		}
+	}
+
+	
 };
