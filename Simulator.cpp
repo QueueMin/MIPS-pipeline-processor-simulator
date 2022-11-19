@@ -109,7 +109,7 @@ public:
 		HazardUnit.detect(IFID,IDEX);
 		ControlUnit.setControl(Operation);
 
-		if(HazardUnit.stall){
+		if(HazardUnit.notStall){
 			IDEX.RegDst = ControlUnit.RegDst;
 			IDEX.MemRead = ControlUnit.MemRead;
 			IDEX.MemtoReg = ControlUnit.MemtoReg;
@@ -270,8 +270,19 @@ public:
 			EX();
 			ID();
 			IF();
-			if(HazardUnit.stall) nowIdx++;
+			if(HazardUnit.notStall) nowIdx++;
 			cycle++;
 		}
+	}
+
+	void runSingleCycle(){
+		WB();
+		MEM();
+		EX();
+		ID();
+		IF();
+		if(HazardUnit.notStall) nowIdx++;
+		cycle++;
+
 	}
 };

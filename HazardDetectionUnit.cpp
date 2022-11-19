@@ -7,7 +7,7 @@ class HazardDetectionUnit
 public:
 	bool PCWrite;
 	bool IFIDWrite;
-	bool stall;
+	bool notStall;
 	std::bitset<5> Rs;
 	std::bitset<5> Rt;
 
@@ -15,7 +15,7 @@ public:
 	{
 		this->PCWrite = 1;
 		this->IFIDWrite = 1;
-		this->stall = 1; // 1일때는 control 0일때 nop
+		this->notStall = 1; // 1일때는 control 0일때 nop
 		this->Rs.reset();
 		this->Rt.reset();
 	}
@@ -30,14 +30,14 @@ public:
 			{
 				this->PCWrite = 0;
 				this->IFIDWrite = 0;
-				this->stall = 0;
+				this->notStall = 0;
 			}
 		}
 		else
 		{
 			this->PCWrite = 1;
 			this->IFIDWrite = 1;
-			this->stall = 1;
+			this->notStall = 1;
 		}
 	}
 };
