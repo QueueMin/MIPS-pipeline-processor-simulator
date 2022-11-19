@@ -1,3 +1,6 @@
+#ifndef SIMULATOR_INCLUDED
+#define SIMULATOR_INCLUDED
+
 #include <iostream>
 #include <string>
 #include <bitset>
@@ -282,3 +285,4 @@ public:
 
 	
 };
+#endif
