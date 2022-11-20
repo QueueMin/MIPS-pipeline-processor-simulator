@@ -1,10 +1,9 @@
-#ifndef TRANSLATES_INCLUDED
-#define TRANSLATES_INCLUDED
+#ifndef TRANSLATES
+#define TRANSLATES
 #include <bitset>
-#include "Elements.cpp"
 
 // 10진수 Dec를 8자리의 16진수로 바꾼 후 앞에 0x를 붙여 string으로 반환
-std::string decToHex(int Dec)
+std::string decToHex(unsigned int Dec)
 {
 	std::string Hex = "";
 	std::string str[16] = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"};
@@ -24,9 +23,9 @@ std::string decToHex(int Dec)
 
 // 2진수 Bin을 10진수로 변환하여 int로 반환
 template <size_t T>
-int binToDec(std::bitset<T> Bin)
+unsigned int binToDec(std::bitset<T> Bin)
 {
-	int Dec = 0;
+	unsigned int Dec = 0;
 	for (int i = Bin.size() - 1; i >= 0; i--)
 	{
 		Dec <<= 1;
@@ -41,15 +40,15 @@ int binToDec(std::bitset<T> Bin)
 template <size_t T>
 std::string binToHex(std::bitset<T> Bin)
 {
-	int Dec = binToDec(Bin);
+	unsigned int Dec = binToDec(Bin);
 	return decToHex(Dec);
 }
 
 // 0xXXXXXXXX형태의 문자열로 받은 16진수를 10진수로 변환하여 반환.
-int hexToDec(std::string Hex)
+unsigned int hexToDec(std::string Hex)
 {
 	char str[16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
-	int Dec = 0;
+	unsigned int Dec = 0;
 	for (int i = 2; i < Hex.length(); i++)
 	{
 		Dec <<= 4;
@@ -68,7 +67,7 @@ int hexToDec(std::string Hex)
 // 16진수를 32자리의 2진수로 변환하여 반환.
 std::bitset<32> hexToBin(std::string Hex)
 {
-	int Dec = hexToDec(Hex);
+	unsigned int Dec = hexToDec(Hex);
 	std::bitset<32> tmp = Dec;
 	return tmp;
 }
@@ -78,7 +77,7 @@ std::bitset<32> signExtention(std::bitset<16> Bin)
 {
 	std::bitset<32> tmp;
 	for (int i = 0; i < 16; i++)
-		tmp[16 + i] = Bin[i];
+		tmp[i] = Bin[i];
 	std::bitset<32> ans;
 	if (Bin[0] == 0)
 	{

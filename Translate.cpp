@@ -1,7 +1,6 @@
-#ifndef TRANSLATES_INCLUDED
-#define TRANSLATES_INCLUDED
+#ifndef TRANSLATES
+#define TRANSLATES
 #include <bitset>
-#include "Elements.cpp"
 
 // 10진수 Dec를 8자리의 16진수로 바꾼 후 앞에 0x를 붙여 string으로 반환
 std::string decToHex(unsigned int Dec)

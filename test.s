@@ -10,10 +10,10 @@ a:
 .globl main
 main :  add $t0, $0, $0
         add $s2, $0, $0
-        sub $t1, s2, t0
-        or  $t3, t4, t5
+        sub $t1, $s2, $t0
+        or  $t3, $t4, $t5
 for :   slt $t1, $t0, $s1
         beq $t1, $t0, end
-        lw $t2, 4($s0)
-        sw $t2, 4($s0)
-end :   j for
+        lw $t2, 4($10)
+        sw $t2, 4($10)
+end :   j for	

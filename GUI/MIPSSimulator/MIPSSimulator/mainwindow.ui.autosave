@@ -725,7 +725,6 @@
  </widget>
  <tabstops>
   <tabstop>statBar</tabstop>
-  <tabstop>graphicMIPS</tabstop>
   <tabstop>instructionTable</tabstop>
  </tabstops>
  <resources>
