@@ -3,7 +3,7 @@
 
 int main(void)
 {
-	std::string fileName = "test.s";
+	std::string fileName = "t.s";
 	Simulator simulator;
 	simulator.fileLoad(fileName);
 	simulator.run();
