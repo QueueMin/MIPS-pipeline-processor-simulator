@@ -20,7 +20,7 @@ public:
 		this->Rt.reset();
 	}
 
-	void detect(IF_ID &IFID, ID_EX IDEX)
+	void detect(IF_ID &IFID, ID_EX IDEX,EX_MEM EXMEM)	
 	{
 		for(int i = 0;i<5;i++) Rs[i] = IFID.Inst[i+21];
 		for(int i = 0;i<5;i++) Rt[i] = IFID.Inst[i+16];
@@ -33,12 +33,20 @@ public:
 				this->notStall = 0;
 			}
 		}
+		else if(EXMEM.MemRead == 1){
+			if(EXMEM.Rd == Rs || EXMEM.Rd == Rt){
+				this->PCWrite = 0;
+				this->IFIDWrite = 0;
+				this->notStall = 0;
+			}
+		}
 		else
 		{
 			this->PCWrite = 1;
 			this->IFIDWrite = 1;
 			this->notStall = 1;
 		}
+
 	}
 };
 #endif
