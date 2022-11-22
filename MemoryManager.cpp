@@ -318,10 +318,18 @@ class MemoryManager{
         fin >> oper >> rd;
         if (oper == "")
           break;
-        if (rd == ":") // JumpIdx 저장 beq 이동시 사용
+        if (rd == ":" || oper[oper.length()-1] == ':') // JumpIdx 저장 beq 이동시 사용
         {
-          JumpIdx.insert({oper, idx + 1});
-          fin >> oper >> rd;
+          if(rd == ":"){
+            JumpIdx.insert({oper, idx + 1});
+            fin >> oper >> rd;
+          }
+          else{
+            oper.replace(oper.find(":"), 1, "");
+            JumpIdx.insert({oper, idx + 1});
+            oper = rd;
+            fin >> rd;
+          }
         }
         if (oper == ".data")
         {
