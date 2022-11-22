@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 #include "Simulator.cpp"
 
+#include <QDebug>
+
 Simulator* sim = new Simulator();
 
 MainWindow::MainWindow(QWidget *parent)
@@ -12,6 +14,25 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionBinary, &QAction::triggered, this, &MainWindow::regToBin);
     connect(ui->actionDecimal, &QAction::triggered, this, &MainWindow::regToDec);
     connect(ui->actionHex, &QAction::triggered, this, &MainWindow::regToHex);
+
+    ui->loadedCiruit->hide();
+    resetImg();
+
+
+
+    this->font_K = QFont("Consolas",14,900);
+    this->brushK = QColor(0, 0, 0, 255);
+    paintK.setBrush(brushK);
+
+
+    this->font_B = QFont("Consolas",14,900);
+    this->brushB = QColor(0, 100, 255, 255);
+    paintB.setBrush(brushK);
+
+    this->font_Y = QFont("Consolas",14,900);
+    this->brushY = QColor(225, 200, 0, 255);
+    paintY.setBrush(brushY);
+
 }
 
 MainWindow::~MainWindow()
@@ -112,3 +133,133 @@ void MainWindow::regToHex(){
     refreshRegTable(this->encodeTo);
 }
 
+void MainWindow::resetImg(){
+    QPixmap item = ui->loadedCiruit->pixmap();
+//    QGraphicsPixmapItem *a = circuitScene.addPixmap(item);
+    circuitScene.addPixmap(item);
+    ui->circuitView->setScene(&circuitScene);
+
+//    a->setOffset(0,0);
+//    circuitScene.addText();
+}
+
+std::string rbool(bool a){
+    return a?"1":"0";
+}
+
+void MainWindow::refreshImgInfo(){
+    circuitScene.clear();
+    resetImg();
+
+    // MEM/WB Register
+
+    // EX/MEM Register
+
+    // ID/EX Register
+    QString RegDst = QString::fromStdString(rbool(sim->IDEX.RegDst));
+    QString MemRead = QString::fromStdString(rbool(sim->IDEX.MemRead));
+    QString MemtoReg = QString::fromStdString(rbool(sim->IDEX.MemtoReg));
+    QString ALUOp1 = QString::fromStdString(rbool(sim->IDEX.ALUOp1));
+    QString ALUOp0 = QString::fromStdString(rbool(sim->IDEX.ALUOp0));
+    QString MemWrite = QString::fromStdString(rbool(sim->IDEX.MemWrite));
+    QString ALUSrc = QString::fromStdString(rbool(sim->IDEX.ALUSrc));
+    QString RegWrite = QString::fromStdString(rbool(sim->IDEX.RegWrite));
+
+    QGraphicsTextItem* gRegWrite = this->circuitScene.addText(RegWrite);
+    fontY(gRegWrite);
+    gRegWrite->setPos(580, 20);
+
+//    gRegWrite->setPos(580, 20);
+
+
+
+    QString Data1 = QString::fromStdString(binToHex(sim->IDEX.Data1));
+    QString Data2 = QString::fromStdString(binToHex(sim->IDEX.Data2));
+    QGraphicsTextItem* gData1 = this->circuitScene.addText(Data1);
+    fontY(gData1);
+    gData1->setPos(580, 322);
+    QGraphicsTextItem* gData2 = this->circuitScene.addText(Data2);
+    fontY(gData2);
+    gData2->setPos(580, 420);
+
+
+    QString Extend = QString::fromStdString(binToHex(sim->IDEX.Extend));
+    QString Function = QString::fromStdString(sim->IDEX.Function.to_string());
+    QString Rs = QString::fromStdString(sim->IDEX.Rs.to_string());
+    QString Rt = QString::fromStdString(sim->IDEX.Rt.to_string());
+    QString Rd = QString::fromStdString(sim->IDEX.Rd.to_string());
+
+    QGraphicsTextItem* gExtend = this->circuitScene.addText(Extend);
+    fontY(gExtend);
+    gExtend->setPos(580, 513);
+    QGraphicsTextItem* gFunction = this->circuitScene.addText(Function);
+    fontY(gFunction);
+    gFunction->setPos(596, 563);
+    QGraphicsTextItem* gRs = this->circuitScene.addText(Rs);
+    fontY(gRs);
+    gRs->setPos(600, 583);
+    QGraphicsTextItem* gRt = this->circuitScene.addText(Rt);
+    fontY(gRt);
+    gRt->setPos(600, 603);
+    QGraphicsTextItem* gRd = this->circuitScene.addText(Rd);
+    fontY(gRd);
+    gRd->setPos(600, 623);
+
+
+    // IF/ID Register
+    QString PC = QString::fromStdString(binToHex(sim->IFID.PC));
+    QString Inst = QString::fromStdString(binToHex(sim->IFID.Inst));
+
+    QGraphicsTextItem* gPC = this->circuitScene.addText(PC);
+    gPC->setPos(200, 300);
+    fontB(gPC);
+
+    QGraphicsTextItem* gInst = this->circuitScene.addText(Inst);
+    gInst->setPos(200, 540);
+    fontB(gInst);
+//    addText(Inst, 200, 540, "B");
+
+    // After all
+    this->update();
+}
+
+void MainWindow::fontK(QGraphicsTextItem* ptr){
+    ptr->setFont(font_K);
+    ptr->setDefaultTextColor(brushK.color());
+}
+void MainWindow::fontB(QGraphicsTextItem* ptr){
+    ptr->setFont(font_B);
+    ptr->setDefaultTextColor(brushB.color());
+}
+
+void MainWindow::fontY(QGraphicsTextItem* ptr){
+    ptr->setFont(font_Y);
+    ptr->setDefaultTextColor(brushY.color());
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    refreshImgInfo();
+}
+
+void MainWindow::on_cycleButton_clicked()
+{
+    sim->runSingleCycle();
+    refreshImgInfo();
+}
+
+QGraphicsTextItem* MainWindow::addText(QString s, int x, int y, QString color){
+    QGraphicsTextItem* g = this->circuitScene.addText(s);
+    this->sceneTexts.addToGroup(g);
+
+    if (color == "K"){
+        fontK(g);
+    }else if (color == "Y"){
+        fontY(g);
+    }else if (color == "B"){
+        fontB(g);
+    }
+
+    g->setPos(x, y);
+    return g;
+}

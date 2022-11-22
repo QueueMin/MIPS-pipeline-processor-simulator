@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1440</width>
+    <width>1720</width>
     <height>960</height>
    </rect>
   </property>
@@ -18,7 +18,7 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>1440</width>
+    <width>1720</width>
     <height>960</height>
    </size>
   </property>
@@ -50,6 +50,35 @@
     </property>
     <item>
      <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="2">
+       <widget class="QPushButton" name="cycleButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="Images.qrc">
+          <normaloff>:/Images/images/play.png</normaloff>:/Images/images/play.png</iconset>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="0">
        <widget class="QPushButton" name="openButton">
         <property name="sizePolicy">
@@ -92,68 +121,17 @@
         </property>
        </spacer>
       </item>
-      <item row="0" column="2">
-       <widget class="QPushButton" name="resetButton">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>30</width>
-          <height>30</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>30</width>
-          <height>30</height>
-         </size>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="Images.qrc">
-          <normaloff>:/Images/images/cut.png</normaloff>:/Images/images/cut.png</iconset>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="3">
-       <widget class="QPushButton" name="testButton">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>30</width>
-          <height>30</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>30</width>
-          <height>30</height>
-         </size>
-        </property>
+       <widget class="QPushButton" name="pushButton">
         <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset theme="application-exit">
-          <normaloff>.</normaloff>.</iconset>
+         <string>test</string>
         </property>
        </widget>
       </item>
      </layout>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="materials" stretch="0,0">
+     <layout class="QHBoxLayout" name="materials" stretch="0,0,0">
       <property name="sizeConstraint">
        <enum>QLayout::SetNoConstraint</enum>
       </property>
@@ -655,9 +633,55 @@
        </widget>
       </item>
       <item>
-       <widget class="QGraphicsView" name="graphicMIPS">
-        <property name="dragMode">
-         <enum>QGraphicsView::NoDrag</enum>
+       <widget class="QGraphicsView" name="circuitView">
+        <property name="sizeIncrement">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="baseSize">
+         <size>
+          <width>1408</width>
+          <height>859</height>
+         </size>
+        </property>
+        <property name="transformationAnchor">
+         <enum>QGraphicsView::NoAnchor</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="loadedCiruit">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="contextMenuPolicy">
+         <enum>Qt::NoContextMenu</enum>
+        </property>
+        <property name="toolTipDuration">
+         <number>63</number>
+        </property>
+        <property name="text">
+         <string notr="true"/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="Images.qrc">:/Images/images/circuit.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -670,7 +694,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1440</width>
+     <width>1720</width>
      <height>21</height>
     </rect>
    </property>
@@ -725,7 +749,6 @@
  </widget>
  <tabstops>
   <tabstop>statBar</tabstop>
-  <tabstop>graphicMIPS</tabstop>
   <tabstop>instructionTable</tabstop>
  </tabstops>
  <resources>

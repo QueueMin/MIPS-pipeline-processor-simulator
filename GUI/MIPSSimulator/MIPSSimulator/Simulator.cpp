@@ -57,6 +57,7 @@ public:
 
 	void fileLoad(std::string fileName){
 		this->MManager.fileRead(fileName);
+        this->PC = MManager.getStartPC();
 	}
 
 	// 시뮬레이터가 Instruction Fetch를 실행. 실행한 결과를 주소값을 받은 IF/ID register 객체에 저장한다.

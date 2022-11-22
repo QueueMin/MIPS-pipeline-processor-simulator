@@ -49,6 +49,24 @@ public:
 	std::bitset<32> Data2 = 0;
 
 	std::bitset<5> Rd = 0;
+
+    int getRead(){
+        return MemRead;
+    }
+
+    int getToReg(){
+        return MemtoReg;
+    }
+
+    int getMemWrite(){
+        return MemWrite;
+    }
+
+    int getRegWrite(){
+        return RegWrite;
+    }
+
+
 };
 
 // MEM/WB 레지스터 클래스.

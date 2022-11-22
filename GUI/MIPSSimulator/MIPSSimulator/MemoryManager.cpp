@@ -23,7 +23,6 @@ struct CheckList
 class MemoryManager{
   private:
     std::map<std::string, std::bitset<32>> Mem;
-    std::map<std::string, std::bitset<32>> Stack;
     std::map<std::string, std::bitset<32>> Program;
     std::map<std::string, std::bitset<32>> WordsAddress;
     std::map<std::string, int> Words;
@@ -295,7 +294,6 @@ class MemoryManager{
       
       // 기존에 읽었던 파일로부터의 정보들을 삭제.
       Mem.clear();
-      Stack.clear();
       Program.clear();
       Words.clear();
       JumpIdx.clear();
@@ -423,10 +421,6 @@ class MemoryManager{
 
     std::map<std::string, std::bitset<32>>* getMem(){
       return &Mem;
-    }
-
-    std::map<std::string, std::bitset<32>> getStack(){
-      return Stack;
     }
 
     std::map<std::string, std::bitset<32>> getProgram(){
