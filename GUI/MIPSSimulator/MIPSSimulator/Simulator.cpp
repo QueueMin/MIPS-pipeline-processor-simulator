@@ -58,6 +58,15 @@ public:
 	void fileLoad(std::string fileName){
 		this->MManager.fileRead(fileName);
         this->PC = MManager.getStartPC();
+		this->PCSrc = 0;
+		this->nowIdx = 0;
+		this->cycle = 0;
+		for (int i = 0; i < 32; i++)
+		{
+			this->Regi[i].reset();
+		}
+		this->Regi[28] = hexToBin("0x10008000");
+		this->Regi[29] = hexToBin("0x7ffffe40");
 	}
 
 	// 시뮬레이터가 Instruction Fetch를 실행. 실행한 결과를 주소값을 받은 IF/ID register 객체에 저장한다.
@@ -110,7 +119,7 @@ public:
 		for(int i = 0;i<16;i++) Extend[i] = this->IFID.Inst[i];
 		for(int i = 0;i<26;i++) JumpDirection[i+2] = this->IFID.Inst[i]; // shift 2 
 
-		HazardUnit.detect(IFID,IDEX);
+		HazardUnit.detect(IFID,IDEX,EXMEM);
 		ControlUnit.setControl(Operation);
 
 		if(HazardUnit.notStall){

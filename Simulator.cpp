@@ -57,6 +57,16 @@ public:
 
 	void fileLoad(std::string fileName){
 		this->MManager.fileRead(fileName);
+        this->PC = MManager.getStartPC();
+		this->PCSrc = 0;
+		this->nowIdx = 0;
+		this->cycle = 0;
+		for (int i = 0; i < 32; i++)
+		{
+			this->Regi[i].reset();
+		}
+		this->Regi[28] = hexToBin("0x10008000");
+		this->Regi[29] = hexToBin("0x7ffffe40");
 	}
 
 	// 시뮬레이터가 Instruction Fetch를 실행. 실행한 결과를 주소값을 받은 IF/ID register 객체에 저장한다.
@@ -138,7 +148,7 @@ public:
 		IDEX.Extend = signExtention(Extend);
 
 		this->jumpAddress = JumpDirection;
-		this->branchAddress = binToDec(IFID.PC) + binToDec(IDEX.Extend)<<2;
+		this->branchAddress = binToDec(IFID.PC) + (int)binToDec(IDEX.Extend)<<2;
 
 		if(Operation == 2){ // j instruction
 			this->flush = 1;
@@ -161,7 +171,7 @@ public:
 		IDEX.Rs = Rs;
 		IDEX.Rt = Rt;
 		IDEX.Rd = Rd;
-		//std::cout << "\nIDEX\nData1 :\t\t" << IDEX.Data1 << "\nData2 :\t\t" << IDEX.Data2 << "\nExtend :\t" << IDEX.Extend << '\n';
+		std::cout << "\nIDEX\nData1 :\t\t" << IDEX.Data1 << "\nData2 :\t\t" << IDEX.Data2 << "\nExtend :\t" << IDEX.Extend << '\n';
 	}
 
 	// 시뮬레이터가 ID_EX 레지스터 객체를 바탕으로 Operation을 Excute하거나 주소값을 계산.
@@ -215,7 +225,7 @@ public:
 			EXMEM.Rd = IDEX.Rt;
 		else
 			EXMEM.Rd = IDEX.Rd;
-		//std::cout << "\nEXMEM\nALUresult :\t" << EXMEM.ALUResult << "\nData :\t\t" << EXMEM.Data2 << "\nRd :\t\t" << EXMEM.Rd << '\n';
+		std::cout << "\nEXMEM\nALUresult :\t" << EXMEM.ALUResult << "\nData :\t\t" << EXMEM.Data2 << "\nRd :\t\t" << EXMEM.Rd << '\n';
 	}
 
 	// Memory 계층에 접근하는 작업 수행.
@@ -247,7 +257,7 @@ public:
 
 		MEMWB.Address = EXMEM.ALUResult;
 		MEMWB.Rd = EXMEM.Rd;
-		//std::cout << "\nMEMWB\nData :\t\t" << MEMWB.Data << "\nAddress:\t" << EXMEM.ALUResult << "\nRd :\t\t" << EXMEM.Rd << '\n';
+		std::cout << "\nMEMWB\nData :\t\t" << MEMWB.Data << "\nAddress:\t" << EXMEM.ALUResult << "\nRd :\t\t" << EXMEM.Rd << '\n';
 	}
 
 	// 레지스터에 수행한 작업 결과를 저장.
@@ -278,7 +288,7 @@ public:
 	}
 
 	void run(){
-		while(nowIdx <= this->MManager.getFileLength()+4){
+		while(nowIdx < this->MManager.getFileLength()+4){
 			runSingleCycle();
 		}
 	}
