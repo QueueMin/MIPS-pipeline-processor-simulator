@@ -79,7 +79,8 @@ public:
 				this->IFID.Inst = 0;
 			
 			else{
-				this->IFID.Inst = MManager.getProgram()[decToHex(binToDec(MManager.getStartPC()) + nowIdx * 4)];
+//				this->IFID.Inst = MManager.getProgram()[decToHex(binToDec(MManager.getStartPC()) + nowIdx * 4)];
+                this->IFID.Inst = MManager.getProgram()[decToHex(binToDec(this->PC))];
 			}
 		}
 
@@ -278,6 +279,7 @@ public:
 
 	// 사이클을 한번 실행. WB부터 IF까지.
 	void runSingleCycle(){
+		if (this->MManager.getFileLength() == -1) return;
 		WB();
 		MEM();
 		EX();
