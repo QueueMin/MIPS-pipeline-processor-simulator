@@ -22,7 +22,7 @@ struct CheckList
 // 
 class MemoryManager{
   private:
-    std::map<std::string, std::bitset<32>> Mem;
+    // std::map<std::string, std::bitset<32>> Mem;
     std::map<std::string, std::bitset<32>> Stack;
     std::map<std::string, std::bitset<32>> Program;
     std::map<std::string, std::bitset<32>> WordsAddress;
@@ -294,7 +294,7 @@ class MemoryManager{
     void fileRead(std::string fileName){
       
       // 기존에 읽었던 파일로부터의 정보들을 삭제.
-      Mem.clear();
+//      Mem.clear();
       Stack.clear();
       Program.clear();
       Words.clear();
@@ -429,9 +429,9 @@ class MemoryManager{
     }
 
 
-    std::map<std::string, std::bitset<32>>* getMem(){
-      return &Mem;
-    }
+    // std::map<std::string, std::bitset<32>>* getMem(){
+    //   return &Mem;
+    // }
 
     std::map<std::string, std::bitset<32>> getStack(){
       return Stack;
@@ -449,8 +449,12 @@ class MemoryManager{
       return WordsAddress;
     }
 
-    std::map<std::string, int> getWords(){
-      return Words;
+    std::map<std::string, int>* getWords(){
+      return &Words;
+    }
+
+    void setWords(std::string key, int val){
+        Words[key] = val;
     }
 
     std::map<std::string, int> getJumpIdx(){
@@ -475,9 +479,9 @@ class MemoryManager{
 
     // 16진수 string으로 받은 key를 기반으로 map Mem에서 key에 해당하는 value를 32비트 bitmap으로 리턴  
     // key가 map에 있는 경우에만 사용.
-    std::bitset<32> getMemVal(std::string key){
-      return Mem[key];
-    }
+    // std::bitset<32> getMemVal(std::string key){
+    //   return Mem[key];
+    // }
 
     int getFileLength(){
       return fileLength;
@@ -485,9 +489,9 @@ class MemoryManager{
 
     // 주소를 16진수 string으로, 입력할 값을 32자리 bitset으로 받아 map Mem에 삽입한다.
     // 해당 주소가 이미 Mem에 key값으로 등록되어 있는 상황에 사용하는 setter method. 
-    void setMem(std::string adr, std::bitset<32> val){
-      Mem[adr] = val;
-    }
+//    void setMem(std::string adr, std::bitset<32> val){
+//      Mem[adr] = val;
+//    }
 
 
 };
