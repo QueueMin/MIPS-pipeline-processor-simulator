@@ -40,7 +40,13 @@ private slots:
     void regToBin();
     void regToDec();
     void regToHex();
+
     void refreshRegTable(int code);
+    void refreshMemTable(int code);
+
+    void memToBin();
+    void memToDec();
+    void memToHex();
 
     void resetImg();
     void refreshImgInfo();
@@ -55,7 +61,8 @@ private:
     void fontB(QGraphicsTextItem*);
     void fontY(QGraphicsTextItem*);
 
-    int encodeTo = 16;
+    int RegEncodeTo = 16;
+    int MEMEncodeTo = 16;
     Ui::MainWindow *ui;
 
     QGraphicsScene circuitScene;

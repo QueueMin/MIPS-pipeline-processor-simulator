@@ -11,9 +11,16 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    this->setWindowTitle("MIPS Pipeline Simulator - by queue_min and parkjs82");
+
     connect(ui->actionBinary, &QAction::triggered, this, &MainWindow::regToBin);
     connect(ui->actionDecimal, &QAction::triggered, this, &MainWindow::regToDec);
     connect(ui->actionHex, &QAction::triggered, this, &MainWindow::regToHex);
+
+    connect(ui->actionValuetoBin, &QAction::triggered, this, &MainWindow::memToBin);
+    connect(ui->actionValuetoDecimal, &QAction::triggered, this, &MainWindow::memToDec);
+    connect(ui->actionValuetoHex, &QAction::triggered, this, &MainWindow::memToHex);
 
     ui->loadedCiruit->hide();
 
@@ -62,8 +69,57 @@ void MainWindow::on_openButton_clicked()
         ui->instructionTable->setItem(i, 1, inst);
     }
 
-    refreshRegTable(16);
     refreshImgInfo();
+    refreshRegTable(this->RegEncodeTo);
+    refreshMemTable(this->MEMEncodeTo);
+}
+
+void MainWindow::memToBin(){
+    this->MEMEncodeTo = 2;
+    refreshMemTable(this->MEMEncodeTo);
+}
+void MainWindow::memToDec(){
+    this->MEMEncodeTo = 10;
+    refreshMemTable(this->MEMEncodeTo);
+}
+void MainWindow::memToHex(){
+    this->MEMEncodeTo = 16;
+    refreshMemTable(this->MEMEncodeTo);
+}
+
+void MainWindow::refreshMemTable(int code){
+    ui->MemoryTable->clearContents();
+
+    int idx = 0;
+
+    for (auto item = sim->MManager.getWords()->begin(); item != sim->MManager.getWords()->end(); item++){
+        QTableWidgetItem* address = new QTableWidgetItem;
+        QTableWidgetItem* data = new QTableWidgetItem;
+
+        address->setText(QString::fromStdString(item->first));
+        if (code == 2){
+            QString tmp = "";
+            for (int j = 0; j < 4; j++){
+                tmp += QString::fromStdString(std::bitset<32>(item->second).to_string().substr(j*4, 4));
+                tmp += " ";
+            }
+            tmp+="\n";
+            for (int j = 4; j < 8; j++){
+                tmp += QString::fromStdString(std::bitset<32>(item->second).to_string().substr(j*4, 4));
+                tmp += " ";
+            }
+            data->setText(tmp);
+        }else if (code == 10){
+            data->setText(QString::fromStdString(std::to_string(item->second)));
+        }else if (code == 16){
+            data->setText(QString::fromStdString(decToHex(item->second)));
+        }
+        ui->MemoryTable->setItem(idx, 0, address);
+        ui->MemoryTable->setItem(idx, 1, data);
+
+        idx++;
+        std::cout << idx << " " << item->first << "\n";
+    }
 }
 
 void MainWindow::refreshRegTable(int code){
@@ -93,7 +149,7 @@ void MainWindow::refreshRegTable(int code){
     ui->regTable->setItem(0, 0, reg);
 
 
-    for (int i = 1; i <= 32; i++){
+    for (int i = 0; i < 32; i++){
         reg = new QTableWidgetItem;
 
         if (code == 2){
@@ -115,23 +171,23 @@ void MainWindow::refreshRegTable(int code){
         }else{
             break;
         }
-        ui->regTable->setItem(i, 0, reg);
+        ui->regTable->setItem(i+1, 0, reg);
     }
 }
 
 void MainWindow::regToBin(){
-    this->encodeTo = 2;
-    refreshRegTable(this->encodeTo);
+    this->RegEncodeTo = 2;
+    refreshRegTable(this->RegEncodeTo);
 }
 
 void MainWindow::regToDec(){
-    this->encodeTo = 10;
-    refreshRegTable(this->encodeTo);
+    this->RegEncodeTo = 10;
+    refreshRegTable(this->RegEncodeTo);
 }
 
 void MainWindow::regToHex(){
-    this->encodeTo = 16;
-    refreshRegTable(this->encodeTo);
+    this->RegEncodeTo = 16;
+    refreshRegTable(this->RegEncodeTo);
 }
 
 void MainWindow::resetImg(){
@@ -152,7 +208,13 @@ void MainWindow::refreshImgInfo(){
     circuitScene.clear();
     resetImg();
 
+    QString Cycle = QString::fromStdString(std::to_string(sim->cycle));
+    QGraphicsTextItem* gCycle = this->circuitScene.addText("Cycle Count= "+Cycle);
+    fontK(gCycle);
+    gCycle->setScale(2);
+    gCycle->setPos(20, 720);
     // MEM/WB Register
+
     QString MMemtoReg = QString::fromStdString(rbool(sim->MEMWB.MemtoReg));
     QGraphicsTextItem* gMMemtoReg = this->circuitScene.addText("= "+MMemtoReg);
     fontB(gMMemtoReg);
@@ -171,12 +233,12 @@ void MainWindow::refreshImgInfo(){
     QString Address = QString::fromStdString(binToHex(sim->MEMWB.Address));
     QGraphicsTextItem* gAddress = this->circuitScene.addText(Address);
     fontB(gAddress);
-    gAddress->setPos(1188, 384);
+    gAddress->setPos(1144, 474);
 
     QString MemData = QString::fromStdString(binToHex(sim->MEMWB.Data));
     QGraphicsTextItem* gMemData = this->circuitScene.addText(MemData);
     fontB(gMemData);
-    gMemData->setPos(1144, 474);
+    gMemData->setPos(1188, 384);
 
     // EX/MEM Register
 
@@ -423,6 +485,8 @@ void MainWindow::on_cycleButton_clicked()
 {
     sim->runSingleCycle();
     refreshImgInfo();
+    refreshMemTable(this->MEMEncodeTo);
+    refreshRegTable(this->RegEncodeTo);
 }
 
 QGraphicsTextItem* MainWindow::addText(QString s, int x, int y, QString color){
