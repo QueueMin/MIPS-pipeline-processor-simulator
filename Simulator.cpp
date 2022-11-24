@@ -97,7 +97,7 @@ public:
                 this->PC = binToDec(this->PC)+4;
             }
         }
-        std::cout  << "\nIFID\nPC :\t\t" << IFID.PC << "\nInst :\t\t" << IFID.Inst << "\n\n";
+        //std::cout  << "\nIFID\nPC :\t\t" << IFID.PC << "\nInst :\t\t" << IFID.Inst << "\n\n";
     }
 
     // 시뮬레이터가 Instruction Decode를 실행.
@@ -172,14 +172,14 @@ public:
         IDEX.Rs = Rs;
         IDEX.Rt = Rt;
         IDEX.Rd = Rd;
-        std::cout << "\nIDEX\nData1 :\t\t" << IDEX.Data1 << "\nData2 :\t\t" << IDEX.Data2 << "\nExtend :\t" << IDEX.Extend << '\n';
+        //std::cout << "\nIDEX\nData1 :\t\t" << IDEX.Data1 << "\nData2 :\t\t" << IDEX.Data2 << "\nExtend :\t" << IDEX.Extend << '\n';
     }
 
     // 시뮬레이터가 ID_EX 레지스터 객체를 바탕으로 Operation을 Excute하거나 주소값을 계산.
     // 이때 각 값들을 해당 Operation에서 사용하던 안하던 일단 계산은 하는 식으로 구현하는게 목표.
     void EX()
     {
-        ForwardUnit.setForward(IDEX,EXMEM,MEMWB);
+        //ForwardUnit.setForward(IDEX,EXMEM,MEMWB);
 
         EXMEM.MemRead = IDEX.MemRead;
         EXMEM.MemtoReg = IDEX.MemtoReg;
@@ -191,12 +191,12 @@ public:
         std::bitset<32> ALUin2;
 
         if(ForwardUnit.forwardA == 0) ALUin1 = IDEX.Data1;
-        else if(ForwardUnit.forwardA == 1) ALUin1 = MEMWB.Data;
-        else if(ForwardUnit.forwardA == 2) ALUin1 = EXMEM.Data2;
+        else if(ForwardUnit.forwardA == 1) ALUin1 = ForwardUnit.MEMWBData;
+        else if(ForwardUnit.forwardA == 2) ALUin1 = ForwardUnit.EXMEMData;
 
         if(ForwardUnit.forwardB == 0) ALUin2 = IDEX.Data2;
-        else if(ForwardUnit.forwardB == 1) ALUin2 = MEMWB.Data;
-        else if(ForwardUnit.forwardB == 2) ALUin2 = EXMEM.Data2;
+        else if(ForwardUnit.forwardB == 1) ALUin2 = ForwardUnit.MEMWBData;
+        else if(ForwardUnit.forwardB == 2) ALUin2 = ForwardUnit.EXMEMData;
         if (IDEX.MemRead || IDEX.MemWrite) ALUin2 = IDEX.Extend;
 
         int func = ALUControl(IDEX.Function, IDEX.ALUOp1, IDEX.ALUOp0);
@@ -226,7 +226,8 @@ public:
             EXMEM.Rd = IDEX.Rt;
         else
             EXMEM.Rd = IDEX.Rd;
-        std::cout << "\nEXMEM\nALUresult :\t" << EXMEM.ALUResult << "\nData :\t\t" << EXMEM.Data2 << "\nRd :\t\t" << EXMEM.Rd << '\n';
+        std::cout << ForwardUnit.forwardA << ' ' << ForwardUnit.forwardB << ' ' << EXMEM.ALUResult <<'\n';
+        //std::cout << "\nEXMEM\nALUresult :\t" << EXMEM.ALUResult << "\nData :\t\t" << EXMEM.Data2 << "\nRd :\t\t" << EXMEM.Rd << '\n';
     }
 
     // Memory 계층에 접근하는 작업 수행.
@@ -258,8 +259,9 @@ public:
         }
 
         MEMWB.Address = EXMEM.ALUResult;
+        ForwardUnit.EXMEMData = MEMWB.Address;
         MEMWB.Rd = EXMEM.Rd;
-        std::cout << "\nMEMWB\nData :\t\t" << MEMWB.Data << "\nAddress:\t" << EXMEM.ALUResult << "\nRd :\t\t" << EXMEM.Rd << '\n';
+        //std::cout << "\nMEMWB\nData :\t\t" << MEMWB.Data << "\nAddress:\t" << EXMEM.ALUResult << "\nRd :\t\t" << EXMEM.Rd << '\n';
     }
 
     // 레지스터에 수행한 작업 결과를 저장.
@@ -275,6 +277,7 @@ public:
         {
             this->Regi[binToDec(MEMWB.Rd)] = data;
         }
+        ForwardUnit.MEMWBData = data;
         std::cout << "cycle " << nowIdx <<'\n';
     }
 
@@ -288,6 +291,7 @@ public:
         IF();
         if(HazardUnit.notStall) nowIdx++;
         cycle++;
+        ForwardUnit.setForward(IDEX,EXMEM,MEMWB);
     }
 
     void run(){

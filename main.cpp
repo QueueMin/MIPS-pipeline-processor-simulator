@@ -3,9 +3,15 @@
 
 int main(void)
 {
-	std::string fileName = "t.s";
+	std::string fileName = "test inf.s";
 	Simulator simulator;
 	simulator.fileLoad(fileName);
-	simulator.run();
+	simulator.runSingleCycle();
+	simulator.runSingleCycle();
+	simulator.runSingleCycle();
+	simulator.runSingleCycle();
+	simulator.runSingleCycle();
+	simulator.runSingleCycle();
+	simulator.runSingleCycle();
 	return 0;
 }
