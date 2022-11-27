@@ -75,17 +75,19 @@ std::bitset<32> hexToBin(std::string Hex)
 // bitset[0]이 부호인것을 감안해 이진수 Bin을 16자리만큼 sign extend하여 반환.
 std::bitset<32> signExtention(std::bitset<16> Bin)
 {
-	std::bitset<32> tmp;
+	std::bitset<32> tmp = 0;
 	for (int i = 0; i < 16; i++)
 		tmp[i] = Bin[i];
 	std::bitset<32> ans;
-	if (Bin[0] == 0)
+	if (Bin[15] == 0)
 	{
-		ans.reset();
+		for (int i = 16; i < 32; i++)
+			ans[i] = 0;
 	}
 	else
 	{
-		ans.set();
+		for (int i = 16; i < 32; i++)
+			ans[i] = 1;
 	}
 	return tmp | ans;
 }
