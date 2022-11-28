@@ -112,6 +112,8 @@ public:
         std::bitset<6> Function;
         std::bitset<16> Extend;
         std::bitset<32> JumpDirection;
+        std::bitset<32> BranchCompareData1;
+        std::bitset<32> BranchCompareData2;
         for(int i = 0;i<6;i++) Operation[i] = this->IFID.Inst[i+26];
         for(int i = 0;i<5;i++) Rs[i] = this->IFID.Inst[i+21];
         for(int i = 0;i<5;i++) Rt[i] = this->IFID.Inst[i+16];
@@ -147,7 +149,14 @@ public:
         IDEX.Data1 = this->Regi[binToDec(Rs)];
         IDEX.Data2 = this->Regi[binToDec(Rt)];
         IDEX.Extend = signExtention(Extend);
+        if(ForwardUnit.BranchForwardA == 0) BranchCompareData1 = IDEX.Data1;
+        else if(ForwardUnit.BranchForwardA == 1) BranchCompareData1 = ForwardUnit.MEMWBData;
+        else if(ForwardUnit.BranchForwardA == 2) BranchCompareData1 = ForwardUnit.EXMEMData;
 
+        if(ForwardUnit.BranchForwardB == 0) BranchCompareData2 = IDEX.Data2;
+        else if(ForwardUnit.BranchForwardB == 1) BranchCompareData2 = ForwardUnit.MEMWBData;
+        else if(ForwardUnit.BranchForwardB == 2) BranchCompareData2 = ForwardUnit.EXMEMData;
+        std::cout << BranchCompareData1 << ' ' << BranchCompareData2;
         this->jumpAddress = JumpDirection;
         this->branchAddress = binToDec(IFID.PC) + ((int)binToDec(IDEX.Extend)<<2)-4;
 
@@ -156,7 +165,8 @@ public:
             this->PCSrc = 0;
             this->Jump = 1;
         }
-        else if(IDEX.Data1 == IDEX.Data2 && ControlUnit.Branch && HazardUnit.IFIDWrite){ // beq instruction
+        else if(BranchCompareData1 == BranchCompareData2 
+        && ControlUnit.Branch && HazardUnit.IFIDWrite){ // beq instruction
             this->flush = 1;
             this->PCSrc = 1;
             this->Jump = 0;
@@ -291,7 +301,7 @@ public:
         if(HazardUnit.notStall) nowIdx++;
         cycle++;
         HazardUnit.detect(IFID,IDEX,EXMEM);
-        ForwardUnit.setForward(IDEX,EXMEM,MEMWB);
+        ForwardUnit.setForward(IFID,IDEX,EXMEM,MEMWB);
     }
 
     void run(){
