@@ -39,7 +39,7 @@ public:
     int nowIdx=0;
     int cycle;
     std::bitset<32> Regi[32];
-
+ 
     Simulator()
     {
         // 생성 시 입력받은 PC를 저장하고 각 레지스터를 초기화.
@@ -63,7 +63,7 @@ public:
         this->cycle = 0;
         for (int i = 0; i < 32; i++)
         {
-            this->Regi[i].reset();
+            this->Regi[i] = i;
         }
         this->Regi[28] = hexToBin("0x10008000");
         this->Regi[29] = hexToBin("0x7ffffe40");
@@ -97,7 +97,7 @@ public:
                 this->PC = binToDec(this->PC)+4;
             }
         }
-        //std::cout  << "\nIFID\nPC :\t\t" << IFID.PC << "\nInst :\t\t" << IFID.Inst << "\n\n";
+        std::cout  << "\nIFID\nPC :\t\t" << IFID.PC << "\nInst :\t\t" << IFID.Inst << "\n\n";
     }
 
     // 시뮬레이터가 Instruction Decode를 실행.
@@ -120,7 +120,7 @@ public:
         for(int i = 0;i<16;i++) Extend[i] = this->IFID.Inst[i];
         for(int i = 0;i<26;i++) JumpDirection[i+2] = this->IFID.Inst[i]; // shift 2
 
-        HazardUnit.detect(IFID,IDEX,EXMEM);
+        // HazardUnit.detect(IFID,IDEX,EXMEM);
         ControlUnit.setControl(Operation);
 
         if(HazardUnit.notStall){
@@ -149,14 +149,14 @@ public:
         IDEX.Extend = signExtention(Extend);
 
         this->jumpAddress = JumpDirection;
-        this->branchAddress = binToDec(IFID.PC) + ((int)binToDec(IDEX.Extend)<<2);
+        this->branchAddress = binToDec(IFID.PC) + ((int)binToDec(IDEX.Extend)<<2)-4;
 
         if(Operation == 2){ // j instruction
             this->flush = 1;
             this->PCSrc = 0;
             this->Jump = 1;
         }
-        else if(IDEX.Data1 == IDEX.Data2 && ControlUnit.Branch){ // beq instruction
+        else if(IDEX.Data1 == IDEX.Data2 && ControlUnit.Branch && HazardUnit.IFIDWrite){ // beq instruction
             this->flush = 1;
             this->PCSrc = 1;
             this->Jump = 0;
@@ -172,7 +172,7 @@ public:
         IDEX.Rs = Rs;
         IDEX.Rt = Rt;
         IDEX.Rd = Rd;
-        //std::cout << "\nIDEX\nData1 :\t\t" << IDEX.Data1 << "\nData2 :\t\t" << IDEX.Data2 << "\nExtend :\t" << IDEX.Extend << '\n';
+        std::cout << "\nIDEX\nData1 :\t\t" << IDEX.Data1 << "\nData2 :\t\t" << IDEX.Data2 << "\nExtend :\t" << IDEX.Extend << '\n';
     }
 
     // 시뮬레이터가 ID_EX 레지스터 객체를 바탕으로 Operation을 Excute하거나 주소값을 계산.
@@ -226,8 +226,7 @@ public:
             EXMEM.Rd = IDEX.Rt;
         else
             EXMEM.Rd = IDEX.Rd;
-        std::cout << ForwardUnit.forwardA << ' ' << ForwardUnit.forwardB << ' ' << EXMEM.ALUResult <<'\n';
-        //std::cout << "\nEXMEM\nALUresult :\t" << EXMEM.ALUResult << "\nData :\t\t" << EXMEM.Data2 << "\nRd :\t\t" << EXMEM.Rd << '\n';
+        std::cout << "\nEXMEM\nALUresult :\t" << EXMEM.ALUResult << "\nData :\t\t" << EXMEM.Data2 << "\nRd :\t\t" << EXMEM.Rd << '\n';
     }
 
     // Memory 계층에 접근하는 작업 수행.
@@ -261,7 +260,7 @@ public:
         MEMWB.Address = EXMEM.ALUResult;
         ForwardUnit.EXMEMData = MEMWB.Address;
         MEMWB.Rd = EXMEM.Rd;
-        //std::cout << "\nMEMWB\nData :\t\t" << MEMWB.Data << "\nAddress:\t" << EXMEM.ALUResult << "\nRd :\t\t" << EXMEM.Rd << '\n';
+        std::cout << "\nMEMWB\nData :\t\t" << MEMWB.Data << "\nAddress:\t" << EXMEM.ALUResult << "\nRd :\t\t" << EXMEM.Rd << '\n';
     }
 
     // 레지스터에 수행한 작업 결과를 저장.
@@ -291,11 +290,12 @@ public:
         IF();
         if(HazardUnit.notStall) nowIdx++;
         cycle++;
+        HazardUnit.detect(IFID,IDEX,EXMEM);
         ForwardUnit.setForward(IDEX,EXMEM,MEMWB);
     }
 
     void run(){
-        while(nowIdx < this->MManager.getFileLength()+4){
+        while(nowIdx < this->MManager.getFileLength()+5){
             runSingleCycle();
         }
     }
