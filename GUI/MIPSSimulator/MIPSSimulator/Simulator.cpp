@@ -179,7 +179,7 @@ public:
     // 이때 각 값들을 해당 Operation에서 사용하던 안하던 일단 계산은 하는 식으로 구현하는게 목표.
     void EX()
     {
-        ForwardUnit.setForward(IDEX,EXMEM,MEMWB);
+//        ForwardUnit.setForward(IDEX,EXMEM,MEMWB);
 
         EXMEM.MemRead = IDEX.MemRead;
         EXMEM.MemtoReg = IDEX.MemtoReg;
@@ -286,6 +286,7 @@ public:
         EX();
         ID();
         IF();
+        ForwardUnit.setForward(IDEX,EXMEM,MEMWB);
         if(HazardUnit.notStall) nowIdx++;
         cycle++;
     }
