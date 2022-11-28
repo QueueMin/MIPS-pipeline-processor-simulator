@@ -7,10 +7,12 @@
 ## Description
 MIPS and/or/add/sub/slt/lw/sw/beq/j 9가지 instruction을 수행하는 5단계 pipeline processor를 cycle 단위로 시각화 하여 보여준다. 
 
-![pipelinePerformance](https://user-images.githubusercontent.com/54925443/204225452-eba3f83d-cdb6-4bf6-a20f-cb27dd9c0060.png)
+![pipelineMap](https://user-images.githubusercontent.com/54925443/204352876-bd3f6438-e557-45ce-bb76-1839e61535f8.png)
+
 
 single cycle 방식에서는 하나의 instruction의 수행을 끝낸 후 다음 cycle을 실행하지만 pipeline 방식에서는 IF, ID, EX, MEM, WB 5단계로 나누어 동시에 다른 instruction을 다루기 때문에 실행시간을 단축할 수 있다.
-"pipelineMap" //워터마크 추가
+
+![pipelinePerformance](https://user-images.githubusercontent.com/54925443/204225452-eba3f83d-cdb6-4bf6-a20f-cb27dd9c0060.png)
 
 ## Hazard
 single cycle 방식은 instruction이 순차적으로 진행되지만 pipeline 방식은 이전 instruction이 끝나기 전에 다음 instruction이 fatch되기 때문에 데이터 처리 과정에서 hazard가 발생한다.
