@@ -152,7 +152,7 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <property name="elideMode">
          <enum>Qt::ElideMiddle</enum>
@@ -697,10 +697,10 @@
              <bool>false</bool>
             </attribute>
             <attribute name="verticalHeaderMinimumSectionSize">
-             <number>25</number>
+             <number>40</number>
             </attribute>
             <attribute name="verticalHeaderDefaultSectionSize">
-             <number>25</number>
+             <number>40</number>
             </attribute>
             <attribute name="verticalHeaderStretchLastSection">
              <bool>false</bool>
