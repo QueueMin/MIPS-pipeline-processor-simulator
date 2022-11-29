@@ -63,7 +63,8 @@ public:
         this->cycle = 0;
         for (int i = 0; i < 32; i++)
         {
-            this->Regi[i] = i;
+            this->Regi[i] = 0;
+//            std::cout << Regi[i];
         }
         this->Regi[28] = hexToBin("0x10008000");
         this->Regi[29] = hexToBin("0x7ffffe40");
@@ -97,6 +98,7 @@ public:
                 this->PC = binToDec(this->PC)+4;
             }
         }
+        IFID.debugInst = binToHex(IFID.Inst);
         std::cout  << "\nIFID\nPC :\t\t" << IFID.PC << "\nInst :\t\t" << IFID.Inst << "\n\n";
     }
 
@@ -183,6 +185,7 @@ public:
         IDEX.Rt = Rt;
         IDEX.Rd = Rd;
         std::cout << "\nIDEX\nData1 :\t\t" << IDEX.Data1 << "\nData2 :\t\t" << IDEX.Data2 << "\nExtend :\t" << IDEX.Extend << '\n';
+        IDEX.debugInst = IFID.debugInst;
     }
 
     // 시뮬레이터가 ID_EX 레지스터 객체를 바탕으로 Operation을 Excute하거나 주소값을 계산.
@@ -237,6 +240,7 @@ public:
         else
             EXMEM.Rd = IDEX.Rd;
         std::cout << "\nEXMEM\nALUresult :\t" << EXMEM.ALUResult << "\nData :\t\t" << EXMEM.Data2 << "\nRd :\t\t" << EXMEM.Rd << '\n';
+        EXMEM.debugInst = IDEX.debugInst;
     }
 
     // Memory 계층에 접근하는 작업 수행.
@@ -271,6 +275,7 @@ public:
         ForwardUnit.EXMEMData = MEMWB.Address;
         MEMWB.Rd = EXMEM.Rd;
         std::cout << "\nMEMWB\nData :\t\t" << MEMWB.Data << "\nAddress:\t" << EXMEM.ALUResult << "\nRd :\t\t" << EXMEM.Rd << '\n';
+        MEMWB.debugInst = EXMEM.debugInst;
     }
 
     // 레지스터에 수행한 작업 결과를 저장.

@@ -10,6 +10,7 @@ public:
 	std::bitset<32> PC = 0;
 	std::bitset<32> Inst = 0;
 	
+    std::string debugInst = "0x00000000";
 };
 
 // ID/EX 레지스터 클래스. Fetch한 Instruction에 알맞는 ControlSignal들을 받아서 저장하고,
@@ -34,6 +35,8 @@ public:
 	std::bitset<5> Rs = 0;
 	std::bitset<5> Rt = 0;
 	std::bitset<5> Rd = 0;
+
+    std::string debugInst = "0x00000000";
 };
 
 // EX/MEM 레지스터 클래스.
@@ -50,23 +53,7 @@ public:
 
 	std::bitset<5> Rd = 0;
 
-    int getRead(){
-        return MemRead;
-    }
-
-    int getToReg(){
-        return MemtoReg;
-    }
-
-    int getMemWrite(){
-        return MemWrite;
-    }
-
-    int getRegWrite(){
-        return RegWrite;
-    }
-
-
+    std::string debugInst = "0x00000000";
 };
 
 // MEM/WB 레지스터 클래스.
@@ -78,6 +65,8 @@ public:
 
 	std::bitset<32> Data = 0;
 	std::bitset<32> Address = 0;
-	std::bitset<5> Rd = 0;
+    std::bitset<5> Rd = 0;
+
+    std::string debugInst = "0x00000000";
 };
 #endif
