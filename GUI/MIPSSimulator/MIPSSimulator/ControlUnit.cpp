@@ -33,18 +33,19 @@ public:
 		this->RegWrite = 0;
 		this->Jump = 0;
 	}
-    void controlFlush(){
-        this->RegDst = 0;
-        this->Branch = 0;
-        this->MemRead = 0;
-        this->MemtoReg = 0;
-        this->ALUOp1 = 0;
-        this->ALUOp0 = 0;
-        this->MemWrite = 0;
-        this->ALUSrc = 0;
-        this->RegWrite = 0;
-        this->Jump = 0;
-    }
+	void controlFlush()
+	{
+		this->RegDst = 0;
+		this->Branch = 0;
+		this->MemRead = 0;
+		this->MemtoReg = 0;
+		this->ALUOp1 = 0;
+		this->ALUOp0 = 0;
+		this->MemWrite = 0;
+		this->ALUSrc = 0;
+		this->RegWrite = 0;
+		this->Jump = 0;
+	}
 
 	void setControl(std::bitset<6> operation)
 	{

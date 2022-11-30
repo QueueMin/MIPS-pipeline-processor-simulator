@@ -78,15 +78,16 @@ std::bitset<32> signExtention(std::bitset<16> Bin)
 	std::bitset<32> tmp;
 	for (int i = 0; i < 16; i++)
 		tmp[i] = Bin[i];
-	std::bitset<32> ans;
-	if (Bin[0] == 0)
+	if (Bin[15] == 0)
 	{
-		ans.reset();
+		for (int i = 16; i < 32; i++)
+			tmp[i] = 0;
 	}
 	else
 	{
-		ans.set();
+		for (int i = 16; i < 32; i++)
+			tmp[i] = 1;
 	}
-	return tmp | ans;
+	return tmp;
 }
 #endif
