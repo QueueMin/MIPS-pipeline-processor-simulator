@@ -243,12 +243,12 @@ void MainWindow::refreshImgInfo(){
 
     // EX/MEM Register
 
-    QString ForwardA = QString::fromStdString(std::bitset<2>(sim->ForwardUnit.getForwardA()).to_string());
+    QString ForwardA = QString::fromStdString(std::bitset<2>(sim->ForwardUnit.forwardA).to_string());
     QGraphicsTextItem* gForwardA = this->circuitScene.addText(ForwardA);
     fontY(gForwardA);
     gForwardA->setPos(820, 324);
 
-    QString ForwardB = QString::fromStdString(std::bitset<2>(sim->ForwardUnit.getForwardB()).to_string());
+    QString ForwardB = QString::fromStdString(std::bitset<2>(sim->ForwardUnit.forwardB).to_string());
     QGraphicsTextItem* gForwardB = this->circuitScene.addText(ForwardB);
     fontY(gForwardB);
     gForwardB->setPos(820, 400);
