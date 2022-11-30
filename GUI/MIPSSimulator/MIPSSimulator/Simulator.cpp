@@ -210,6 +210,7 @@ public:
         if(ForwardUnit.forwardB == 0) ALUin2 = IDEX.Data2;
         else if(ForwardUnit.forwardB == 1) ALUin2 = ForwardUnit.MEMWBData;
         else if(ForwardUnit.forwardB == 2) ALUin2 = ForwardUnit.EXMEMData;
+        EXMEM.Data2 = ALUin2;
         if (IDEX.MemRead || IDEX.MemWrite) ALUin2 = IDEX.Extend;
 
         int func = ALUControl(IDEX.Function, IDEX.ALUOp1, IDEX.ALUOp0);
@@ -233,7 +234,7 @@ public:
         {
             EXMEM.ALUResult = sltOperation(ALUin1, ALUin2);
         }
-        EXMEM.Data2 = IDEX.Data2;
+//        EXMEM.Data2 = IDEX.Data2;
 
         if (IDEX.RegDst == 0)
             EXMEM.Rd = IDEX.Rt;
@@ -241,6 +242,7 @@ public:
             EXMEM.Rd = IDEX.Rd;
         std::cout << "\nEXMEM\nALUresult :\t" << EXMEM.ALUResult << "\nData :\t\t" << EXMEM.Data2 << "\nRd :\t\t" << EXMEM.Rd << '\n';
         EXMEM.debugInst = IDEX.debugInst;
+        if (!(EXMEM.MemRead||EXMEM.MemtoReg||EXMEM.MemWrite||EXMEM.RegWrite)) EXMEM.debugInst = "!!BUBBLE!!";
     }
 
     // Memory 계층에 접근하는 작업 수행.
@@ -276,6 +278,7 @@ public:
         MEMWB.Rd = EXMEM.Rd;
         std::cout << "\nMEMWB\nData :\t\t" << MEMWB.Data << "\nAddress:\t" << EXMEM.ALUResult << "\nRd :\t\t" << EXMEM.Rd << '\n';
         MEMWB.debugInst = EXMEM.debugInst;
+        if (!(MEMWB.MemtoReg||MEMWB.RegWrite)) MEMWB.debugInst = "!!BUBBLE!!";
     }
 
     // 레지스터에 수행한 작업 결과를 저장.

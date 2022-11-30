@@ -110,7 +110,7 @@ void MainWindow::refreshMemTable(int code){
             }
             data->setText(tmp);
         }else if (code == 10){
-            data->setText(QString::fromStdString(std::to_string(item->second)));
+            data->setText(QString::fromStdString(std::to_string((int)item->second)));
         }else if (code == 16){
             data->setText(QString::fromStdString(decToHex(item->second)));
         }
@@ -125,6 +125,7 @@ void MainWindow::refreshMemTable(int code){
 void MainWindow::refreshRegTable(int code){
     QTableWidgetItem* reg = new QTableWidgetItem;
     if (code == 2){
+//        ui->regTable->setH
         QString tmp = "";
         for (int i = 0; i < 4; i++){
             tmp += QString::fromStdString((sim->PC).to_string().substr(i*4, 4));
@@ -139,7 +140,7 @@ void MainWindow::refreshRegTable(int code){
         reg->setText(tmp);
 
     }else if (code == 10){
-        reg->setText(QString::fromStdString(std::to_string(binToDec(sim->PC))));
+        reg->setText(QString::fromStdString(std::to_string((int)binToDec(sim->PC))));
     }else if (code == 16){
         reg->setText(QString::fromStdString(binToHex(sim->PC)));
     }else{
@@ -165,7 +166,7 @@ void MainWindow::refreshRegTable(int code){
             }
             reg->setText(tmp);
         }else if (code == 10){
-            reg->setText(QString::fromStdString(std::to_string(binToDec(sim->Regi[i]))));
+            reg->setText(QString::fromStdString(std::to_string((int)binToDec(sim->Regi[i]))));
         }else if (code == 16){
             reg->setText(QString::fromStdString(binToHex(sim->Regi[i])));
         }else{
