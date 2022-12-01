@@ -192,9 +192,8 @@ void MainWindow::regToHex(){
 }
 
 void MainWindow::resetImg(){
-    QPixmap item = ui->loadedCiruit->pixmap();
-//    QGraphicsPixmapItem *a = circuitScene.addPixmap(item);
-    circuitScene.addPixmap(item);
+//    QPixmap item = ;
+    circuitScene.addPixmap(ui->loadedCiruit->pixmap());
     ui->circuitView->setScene(&circuitScene);
 
 //    a->setOffset(0,0);
