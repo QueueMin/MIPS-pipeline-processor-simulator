@@ -234,7 +234,7 @@ void MainWindow::refreshImgInfo(){
     QString Address = QString::fromStdString(binToHex(sim->MEMWB.Address));
     QGraphicsTextItem* gAddress = this->circuitScene.addText(Address);
     fontB(gAddress);
-    gAddress->setPos(1144, 474);
+    gAddress->setPos(1188, 474);
 
     QString MemData = QString::fromStdString(binToHex(sim->MEMWB.Data));
     QGraphicsTextItem* gMemData = this->circuitScene.addText(MemData);
@@ -302,7 +302,7 @@ void MainWindow::refreshImgInfo(){
     // ID/EX Register
 
 
-    //    QString Jump = QString::fromStdString("="+rbool(sim->ControlUnit.Jump));
+    //    QString Jump = QString::fromStdString("="+rbool(sim->cUnit.Jump));
 //    QGraphicsTextItem* gJump = this->circuitScene.addText(Jump);
 //    fontB(gJump);
 //    gJump->setPos(480, 212);
@@ -325,7 +325,7 @@ void MainWindow::refreshImgInfo(){
     fontB(gFlush2);
     gFlush2->setPos(368, 142);
 
-    QString Branch = QString::fromStdString("Branch= "  + rbool(sim->ControlUnit.Branch));
+    QString Branch = QString::fromStdString("Branch= "  + rbool(sim->cUnit.Branch));
     QGraphicsTextItem* gBranch = this->circuitScene.addText(Branch);
     fontB(gBranch);
     gBranch->setPos(480, 142);
@@ -340,7 +340,7 @@ void MainWindow::refreshImgInfo(){
     gPCSrc2->setPos(170, 180);
 
 
-    QString Jump = QString::fromStdString(rbool(sim->ControlUnit.Jump));
+    QString Jump = QString::fromStdString(rbool(sim->cUnit.Jump));
     QGraphicsTextItem* gJump = this->circuitScene.addText(Jump);
     fontB(gJump);
     gJump->setPos(480, 212);
@@ -460,22 +460,22 @@ void MainWindow::refreshImgInfo(){
     fontB(gFetchedPC);
 
     // for debug
-    QString inst1 = QString::fromStdString((sim->IFID.debugInst));
-    QGraphicsTextItem* ginst1 = this->circuitScene.addText(inst1);
-    ginst1->setPos(200, 650);
-    fontK(ginst1);
-    QString inst2 = QString::fromStdString((sim->IDEX.debugInst));
-    QGraphicsTextItem* ginst2 = this->circuitScene.addText(inst2);
-    ginst2->setPos(580, 650);
-    fontK(ginst2);
-    QString inst3 = QString::fromStdString((sim->EXMEM.debugInst));
-    QGraphicsTextItem* ginst3 = this->circuitScene.addText(inst3);
-    ginst3->setPos(980, 650);
-    fontK(ginst3);
-    QString inst4 = QString::fromStdString((sim->MEMWB.debugInst));
-    QGraphicsTextItem* ginst4 = this->circuitScene.addText(inst4);
-    ginst4->setPos(1160, 650);
-    fontK(ginst4);
+//    QString inst1 = QString::fromStdString((sim->IFID.debugInst));
+//    QGraphicsTextItem* ginst1 = this->circuitScene.addText(inst1);
+//    ginst1->setPos(200, 650);
+//    fontK(ginst1);
+//    QString inst2 = QString::fromStdString((sim->IDEX.debugInst));
+//    QGraphicsTextItem* ginst2 = this->circuitScene.addText(inst2);
+//    ginst2->setPos(580, 650);
+//    fontK(ginst2);
+//    QString inst3 = QString::fromStdString((sim->EXMEM.debugInst));
+//    QGraphicsTextItem* ginst3 = this->circuitScene.addText(inst3);
+//    ginst3->setPos(980, 650);
+//    fontK(ginst3);
+//    QString inst4 = QString::fromStdString((sim->MEMWB.debugInst));
+//    QGraphicsTextItem* ginst4 = this->circuitScene.addText(inst4);
+//    ginst4->setPos(1160, 650);
+//    fontK(ginst4);
 
 
 

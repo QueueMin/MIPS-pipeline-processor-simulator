@@ -22,7 +22,7 @@ public:
 
   ForwardingUnit ForwardUnit;
   HazardDetectionUnit HazardUnit;
-  ControlUnit ControlUnit;
+  ControlUnit cUnit;
 
   std::bitset<32> branchAddress;
   std::bitset<32> jumpAddress;
@@ -96,7 +96,7 @@ public:
       {
         this->PC = this->branchAddress;
       }
-      else if (this->ControlUnit.Jump == 1)
+      else if (this->cUnit.Jump == 1)
       {
         this->PC = this->jumpAddress;
       }
@@ -139,18 +139,18 @@ public:
       JumpDirection[i + 2] = this->IFID.Inst[i]; // shift 2
 
     // HazardUnit.detect(IFID,IDEX,EXMEM);
-    ControlUnit.setControl(Operation);
+    cUnit.setControl(Operation);
 
     if (HazardUnit.notStall)
     {
-      IDEX.RegDst = ControlUnit.RegDst;
-      IDEX.MemRead = ControlUnit.MemRead;
-      IDEX.MemtoReg = ControlUnit.MemtoReg;
-      IDEX.ALUOp1 = ControlUnit.ALUOp1;
-      IDEX.ALUOp0 = ControlUnit.ALUOp0;
-      IDEX.MemWrite = ControlUnit.MemWrite;
-      IDEX.ALUSrc = ControlUnit.ALUSrc;
-      IDEX.RegWrite = ControlUnit.RegWrite;
+      IDEX.RegDst = cUnit.RegDst;
+      IDEX.MemRead = cUnit.MemRead;
+      IDEX.MemtoReg = cUnit.MemtoReg;
+      IDEX.ALUOp1 = cUnit.ALUOp1;
+      IDEX.ALUOp0 = cUnit.ALUOp0;
+      IDEX.MemWrite = cUnit.MemWrite;
+      IDEX.ALUSrc = cUnit.ALUSrc;
+      IDEX.RegWrite = cUnit.RegWrite;
     }
     else
     {
@@ -190,7 +190,7 @@ public:
       this->PCSrc = 0;
       this->Jump = 1;
     }
-    else if (BranchCompareData1 == BranchCompareData2 && ControlUnit.Branch && HazardUnit.IFIDWrite)
+    else if (BranchCompareData1 == BranchCompareData2 && cUnit.Branch && HazardUnit.IFIDWrite)
     { // beq instruction
       this->flush = 1;
       this->PCSrc = 1;
