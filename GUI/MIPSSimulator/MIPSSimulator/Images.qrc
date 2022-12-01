@@ -1,12 +1,8 @@
 <RCC>
     <qresource prefix="/Images">
-        <file>images/copy.png</file>
-        <file>images/cut.png</file>
-        <file>images/new.png</file>
         <file>images/open.png</file>
-        <file>images/paste.png</file>
-        <file>images/save.png</file>
         <file>images/circuit.png</file>
         <file>images/play.png</file>
+        <file>images/windowicon.png</file>
     </qresource>
 </RCC>
