@@ -221,6 +221,10 @@ void MainWindow::refreshImgInfo(){
     fontB(gMRegWrite);
     gMRegWrite->setPos(1266, 216);
 
+    QGraphicsTextItem* gMRegWrite2 = this->circuitScene.addText("= "+MRegWrite);
+    fontB(gMRegWrite2);
+    gMRegWrite2->setPos(1150, 0);
+
     QString MRd = QString::fromStdString(sim->MEMWB.Rd.to_string());
     QGraphicsTextItem* gMRd = this->circuitScene.addText(MRd);
     fontB(gMRd);
@@ -252,9 +256,6 @@ void MainWindow::refreshImgInfo(){
     QGraphicsTextItem* gExData = this->circuitScene.addText(ExData);
     fontB(gExData);
     gExData->setPos(980, 420);
-    QGraphicsTextItem* gExData2 = this->circuitScene.addText(ExData);
-    fontB(gExData2);
-    gExData2->setPos(1096, 76);
 
     QString ALUResult = QString::fromStdString(binToHex(sim->EXMEM.ALUResult));
     QGraphicsTextItem* gALUResult = this->circuitScene.addText(ALUResult);
