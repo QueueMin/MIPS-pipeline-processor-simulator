@@ -2,3 +2,5 @@
 *.exe
 *.txt
 tempCodeRunnerFile.cpp
+CMakeCache.txt
+./CMakeFiles
