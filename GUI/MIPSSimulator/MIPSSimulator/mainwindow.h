@@ -29,13 +29,10 @@ public:
     QBrush brushB;
     QBrush brushY;
 
-    QPainter paintK;
-    QPainter paintB;
-    QPainter paintY;
-
 private slots:
 
     void on_openButton_clicked();
+    void on_cycleButton_clicked();
 
     void regToBin();
     void regToDec();
@@ -51,9 +48,7 @@ private slots:
     void resetImg();
     void refreshImgInfo();
 
-    void on_pushButton_clicked();
 
-    void on_cycleButton_clicked();
     QGraphicsTextItem* addText(QString s, int x = 0, int y = 0, QString color = "K");
 
 private:

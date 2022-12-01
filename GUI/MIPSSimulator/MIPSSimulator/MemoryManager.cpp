@@ -352,7 +352,7 @@ public:
     std::ifstream fin(fileName);
     if (!fin)
     {
-      std::cout << "file is NOT exist\n";
+      // std::cout << "file is NOT exist\n";
       return;
     }
     std::string oper, rs, rt, rd, con, tmp;

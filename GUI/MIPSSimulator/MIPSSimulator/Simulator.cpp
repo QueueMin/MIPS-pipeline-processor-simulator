@@ -65,7 +65,7 @@ public:
     for (int i = 0; i < 32; i++)
     {
       this->Regi[i] = 0;
-      //            std::cout << Regi[i];
+      //  std::cout << Regi[i];
     }
     this->Regi[28] = hexToBin("0x10008000");
     this->Regi[29] = hexToBin("0x7ffffe40");
@@ -106,7 +106,7 @@ public:
       }
     }
     IFID.debugInst = binToHex(IFID.Inst);
-    std::cout << "\nIFID\nPC :\t\t" << IFID.PC << "\nInst :\t\t" << IFID.Inst << "\n\n";
+    // std::cout << "\nIFID\nPC :\t\t" << IFID.PC << "\nInst :\t\t" << IFID.Inst << "\n\n";
   }
 
   // 시뮬레이터가 Instruction Decode를 실행.
@@ -180,7 +180,7 @@ public:
       BranchCompareData2 = ForwardUnit.MEMWBData;
     else if (ForwardUnit.BranchForwardB == 2)
       BranchCompareData2 = ForwardUnit.EXMEMData;
-    std::cout << BranchCompareData1 << ' ' << BranchCompareData2;
+    // std::cout << BranchCompareData1 << ' ' << BranchCompareData2;
     this->jumpAddress = JumpDirection;
     this->branchAddress = binToDec(IFID.PC) + ((int)binToDec(IDEX.Extend) << 2) - 4;
 
@@ -208,7 +208,7 @@ public:
     IDEX.Rs = Rs;
     IDEX.Rt = Rt;
     IDEX.Rd = Rd;
-    std::cout << "\nIDEX\nData1 :\t\t" << IDEX.Data1 << "\nData2 :\t\t" << IDEX.Data2 << "\nExtend :\t" << IDEX.Extend << '\n';
+    // std::cout << "\nIDEX\nData1 :\t\t" << IDEX.Data1 << "\nData2 :\t\t" << IDEX.Data2 << "\nExtend :\t" << IDEX.Extend << '\n';
     IDEX.debugInst = IFID.debugInst;
   }
 
@@ -279,7 +279,7 @@ public:
     {
       EXMEM.Rd = IDEX.Rd;
     }
-    std::cout << "\nEXMEM\nALUresult :\t" << EXMEM.ALUResult << "\nData :\t\t" << EXMEM.Data2 << "\nRd :\t\t" << EXMEM.Rd << '\n';
+    // std::cout << "\nEXMEM\nALUresult :\t" << EXMEM.ALUResult << "\nData :\t\t" << EXMEM.Data2 << "\nRd :\t\t" << EXMEM.Rd << '\n';
     EXMEM.debugInst = IDEX.debugInst;
     if (!(EXMEM.MemRead || EXMEM.MemtoReg || EXMEM.MemWrite || EXMEM.RegWrite))
       EXMEM.debugInst = "!!BUBBLE!!";
@@ -323,7 +323,7 @@ public:
     MEMWB.Address = EXMEM.ALUResult;
     ForwardUnit.EXMEMData = MEMWB.Address;
     MEMWB.Rd = EXMEM.Rd;
-    std::cout << "\nMEMWB\nData :\t\t" << MEMWB.Data << "\nAddress:\t" << EXMEM.ALUResult << "\nRd :\t\t" << EXMEM.Rd << '\n';
+    // std::cout << "\nMEMWB\nData :\t\t" << MEMWB.Data << "\nAddress:\t" << EXMEM.ALUResult << "\nRd :\t\t" << EXMEM.Rd << '\n';
     MEMWB.debugInst = EXMEM.debugInst;
     if (!(MEMWB.MemtoReg || MEMWB.RegWrite))
       MEMWB.debugInst = "!!BUBBLE!!";
@@ -343,7 +343,7 @@ public:
       this->Regi[binToDec(MEMWB.Rd)] = data;
     }
     ForwardUnit.MEMWBData = data;
-    std::cout << "cycle " << nowIdx << '\n';
+    // std::cout << "cycle " << nowIdx << '\n';
   }
 
   // 사이클을 한번 실행. WB부터 IF까지.

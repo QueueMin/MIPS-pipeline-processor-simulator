@@ -26,16 +26,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     this->font_K = QFont("Consolas",14,900);
     this->brushK = QColor(0, 0, 0, 255);
-    paintK.setBrush(brushK);
-
 
     this->font_B = QFont("Consolas",14,900);
     this->brushB = QColor(0, 100, 255, 255);
-    paintB.setBrush(brushK);
 
     this->font_Y = QFont("Consolas",14,900);
     this->brushY = QColor(225, 200, 0, 255);
-    paintY.setBrush(brushY);
 
     refreshImgInfo();
 }
@@ -118,7 +114,7 @@ void MainWindow::refreshMemTable(int code){
         ui->MemoryTable->setItem(idx, 1, data);
 
         idx++;
-        std::cout << idx << " " << item->first << "\n";
+        // std::cout << idx << " " << item->first << "\n";
     }
 }
 
@@ -392,10 +388,10 @@ void MainWindow::refreshImgInfo(){
     QString Data1 = QString::fromStdString(binToHex(sim->IDEX.Data1));
     QString Data2 = QString::fromStdString(binToHex(sim->IDEX.Data2));
     QGraphicsTextItem* gData1 = this->circuitScene.addText(Data1);
-    fontY(gData1);
+    fontB(gData1);
     gData1->setPos(580, 322);
     QGraphicsTextItem* gData2 = this->circuitScene.addText(Data2);
-    fontY(gData2);
+    fontB(gData2);
     gData2->setPos(580, 420);
 
 
@@ -406,19 +402,19 @@ void MainWindow::refreshImgInfo(){
     QString Rd = QString::fromStdString(sim->IDEX.Rd.to_string());
 
     QGraphicsTextItem* gExtend = this->circuitScene.addText(Extend);
-    fontY(gExtend);
+    fontB(gExtend);
     gExtend->setPos(580, 513);
     QGraphicsTextItem* gFunction = this->circuitScene.addText(Function);
-    fontY(gFunction);
+    fontB(gFunction);
     gFunction->setPos(596, 563);
     QGraphicsTextItem* gRs = this->circuitScene.addText(Rs);
-    fontY(gRs);
+    fontB(gRs);
     gRs->setPos(600, 583);
     QGraphicsTextItem* gRt = this->circuitScene.addText(Rt);
-    fontY(gRt);
+    fontB(gRt);
     gRt->setPos(600, 603);
     QGraphicsTextItem* gRd = this->circuitScene.addText(Rd);
-    fontY(gRd);
+    fontB(gRd);
     gRd->setPos(600, 623);
 
 
@@ -499,10 +495,6 @@ void MainWindow::fontY(QGraphicsTextItem* ptr){
     ptr->setDefaultTextColor(brushY.color());
 }
 
-void MainWindow::on_pushButton_clicked()
-{
-    refreshImgInfo();
-}
 
 void MainWindow::on_cycleButton_clicked()
 {
