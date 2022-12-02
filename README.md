@@ -64,7 +64,8 @@ program counter와 $0~$31번 레지스터에 들어가는 데이터는 `Simulato
 ## Usage
 * ![image](https://user-images.githubusercontent.com/55120768/205359735-a4da0887-6974-4922-9039-e0b4e64566ab.png) File load button: 버튼을 누르면 파일을 선택할 수 있는 dialog가 나오고, 해당 dialog를 통해 `{filename}.s`형태로 저장된 파일을 열면 해당 파일의 내용을 바탕으로 instruction들이 시뮬레이터에 저장된다.
 * ![image](https://user-images.githubusercontent.com/55120768/205360416-650399f9-85f2-437f-8dbb-b941ac656bb8.png) Run single cycle button: 버튼을 누르면 현재 시뮬레이터에 저장된 값들을 바탕으로 시뮬레이터를 한 사이클 작동한다. 
-![image](https://user-images.githubusercontent.com/55120768/205361051-5193641f-61ee-4f5e-9d0d-f677d3e1f3af.png)
+
+* ![image](https://user-images.githubusercontent.com/55120768/205361415-73010205-6975-443c-87e1-bd11d4474db5.png) Display Settings: Register 탭에서 보여주는 값들과 Memory 탭에서 보여주는 값들을 각각 2진수, 10진수, 16진수로 변환하여 표시할 수 있도록 설정한다.
 
 
 
