@@ -6,7 +6,7 @@ a:
   .word -4
   .word -2
   .word -1
-  .word -1
+  .word 5
 
 .text 0x00400024
 .globl main
