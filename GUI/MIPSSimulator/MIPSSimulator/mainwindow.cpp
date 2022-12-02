@@ -33,6 +33,10 @@ MainWindow::MainWindow(QWidget *parent)
     this->font_Y = QFont("Consolas",14,900);
     this->brushY = QColor(225, 200, 0, 255);
 
+    this->font_R = QFont("Consolas",9);
+    this->font_R.setBold(1);
+    this->brushR = QColor(255, 0, 0, 255);
+
     refreshImgInfo();
 }
 
@@ -51,20 +55,29 @@ void MainWindow::on_openButton_clicked()
     sim->fileLoad(fileName.toStdString());
 
     ui->instructionTable->clearContents();
+    ui->MemoryTable->clearContents();
+    ui->regTable->clearContents();
 
 
     int sPC = binToDec(sim->MManager.getStartPC());
+    if (sim->MManager.getFileLength() > 32){
+        ui->instructionTable->setRowCount(sim->MManager.getFileLength()+1);
+    }else{
+        ui->instructionTable->setRowCount(32);
+    }
+
     for (int i = 0; i <= sim->MManager.getFileLength(); i++){
         QTableWidgetItem* pc = new QTableWidgetItem;
         QTableWidgetItem* inst = new QTableWidgetItem;
 
         pc->setText(QString::fromStdString(decToHex(sPC+4*i)));
+        pc->setTextAlignment(Qt::AlignCenter);
         inst->setText(QString::fromStdString(binToHex(sim->MManager.getProgram(decToHex(sPC+4*i)))));
+        inst->setTextAlignment(Qt::AlignCenter);
 
         ui->instructionTable->setItem(i, 0, pc);
         ui->instructionTable->setItem(i, 1, inst);
     }
-
     refreshImgInfo();
     refreshRegTable(this->RegEncodeTo);
     refreshMemTable(this->MEMEncodeTo);
@@ -87,8 +100,16 @@ void MainWindow::refreshMemTable(int code){
     ui->MemoryTable->clearContents();
 
     int idx = 0;
-
     for (auto item = sim->MManager.getWords()->begin(); item != sim->MManager.getWords()->end(); item++){
+        if (item->second == 0) continue;
+        idx++;
+        // std::cout << idx << " " << item->first << "\n";
+    }
+    ui->MemoryTable->setRowCount(idx);
+
+    idx = 0;
+    for (auto item = sim->MManager.getWords()->begin(); item != sim->MManager.getWords()->end(); item++){
+        if (item->second == 0) continue;
         QTableWidgetItem* address = new QTableWidgetItem;
         QTableWidgetItem* data = new QTableWidgetItem;
 
@@ -102,6 +123,7 @@ void MainWindow::refreshMemTable(int code){
             tmp+="\n";
             for (int j = 4; j < 8; j++){
                 tmp += QString::fromStdString(std::bitset<32>(item->second).to_string().substr(j*4, 4));
+                if (j == 7) break;
                 tmp += " ";
             }
             data->setText(tmp);
@@ -110,18 +132,37 @@ void MainWindow::refreshMemTable(int code){
         }else if (code == 16){
             data->setText(QString::fromStdString(decToHex(item->second)));
         }
+
+        address->setTextAlignment(Qt::AlignCenter);
+        data->setTextAlignment(Qt::AlignCenter);
         ui->MemoryTable->setItem(idx, 0, address);
         ui->MemoryTable->setItem(idx, 1, data);
+        if (code != 2){
+            ui->MemoryTable->setRowHeight(idx,24);
+        }else{
+            ui->MemoryTable->setRowHeight(idx,40);
+        }
 
         idx++;
         // std::cout << idx << " " << item->first << "\n";
     }
 }
 
+QString binToCode(std::bitset<32> val, int code){
+    QString ans;
+    if (code == 2){
+        ans = QString::fromStdString(val.to_string());
+    }else if (code == 10){
+        ans = QString::fromStdString(std::to_string(binToDec(val)));
+    }else{
+        ans = QString::fromStdString(binToHex(val));
+    }
+    return ans;
+}
+
 void MainWindow::refreshRegTable(int code){
     QTableWidgetItem* reg = new QTableWidgetItem;
     if (code == 2){
-//        ui->regTable->setH
         QString tmp = "";
         for (int i = 0; i < 4; i++){
             tmp += QString::fromStdString((sim->PC).to_string().substr(i*4, 4));
@@ -130,9 +171,9 @@ void MainWindow::refreshRegTable(int code){
         tmp+="\n";
         for (int i = 4; i < 8; i++){
             tmp += QString::fromStdString((sim->PC).to_string().substr(i*4, 4));
+            if (i == 7) break;
             tmp += " ";
         }
-
         reg->setText(tmp);
 
     }else if (code == 10){
@@ -143,11 +184,23 @@ void MainWindow::refreshRegTable(int code){
         delete(reg);
         return;
     }
+    reg->setTextAlignment(Qt::AlignCenter);
+    if (ui->regTable->itemAt(0,0) != NULL){
+        if (ui->regTable->itemAt(0,0)->text() != reg->text()){
+            reg->setForeground(brushR);
+        }
+    }
     ui->regTable->setItem(0, 0, reg);
+    if (code != 2){
+        ui->regTable->setRowHeight(0,24);
+    }else{
+        ui->regTable->setRowHeight(0,40);
+    }
 
 
     for (int i = 0; i < 32; i++){
         reg = new QTableWidgetItem;
+        reg->setForeground(brushK);
 
         if (code == 2){
             QString tmp = "";
@@ -158,6 +211,7 @@ void MainWindow::refreshRegTable(int code){
             tmp+="\n";
             for (int j = 4; j < 8; j++){
                 tmp += QString::fromStdString((sim->Regi[i]).to_string().substr(j*4, 4));
+                if (j == 7) break;
                 tmp += " ";
             }
             reg->setText(tmp);
@@ -168,7 +222,19 @@ void MainWindow::refreshRegTable(int code){
         }else{
             break;
         }
+        reg->setTextAlignment(Qt::AlignCenter);
+        if (ui->regTable->item(i+1,0) != NULL){
+            if (ui->regTable->item(i+1, 0)->text() != binToCode(sim->Regi[i], this->RegEncodeTo)){
+                reg->setForeground(brushR);
+            }
+        }
         ui->regTable->setItem(i+1, 0, reg);
+
+        if (code != 2){
+            ui->regTable->setRowHeight(i+1,24);
+        }else{
+            ui->regTable->setRowHeight(i+1,40);
+        }
     }
 }
 
@@ -496,9 +562,17 @@ void MainWindow::fontY(QGraphicsTextItem* ptr){
     ptr->setDefaultTextColor(brushY.color());
 }
 
+void MainWindow::fontR(QGraphicsTextItem* ptr){
+    ptr->setFont(font_R);
+    ptr->setDefaultTextColor(brushR.color());
+}
+
 
 void MainWindow::on_cycleButton_clicked()
 {
+    if (sim->MManager.getFileLength() == -1){
+        return;
+    }
     sim->runSingleCycle();
     refreshImgInfo();
     refreshMemTable(this->MEMEncodeTo);

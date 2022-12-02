@@ -24,10 +24,12 @@ public:
     QFont font_K;
     QFont font_B;
     QFont font_Y;
+    QFont font_R;
 
     QBrush brushK;
     QBrush brushB;
     QBrush brushY;
+    QBrush brushR;
 
 private slots:
 
@@ -55,6 +57,7 @@ private:
     void fontK(QGraphicsTextItem*);
     void fontB(QGraphicsTextItem*);
     void fontY(QGraphicsTextItem*);
+    void fontR(QGraphicsTextItem*);
 
     int RegEncodeTo = 16;
     int MEMEncodeTo = 16;
