@@ -74,6 +74,18 @@
           <height>30</height>
          </size>
         </property>
+        <property name="toolTip">
+         <string>Load a file.</string>
+        </property>
+        <property name="toolTipDuration">
+         <number>-1</number>
+        </property>
+        <property name="statusTip">
+         <string comment="dd" extracomment="aa"/>
+        </property>
+        <property name="whatsThis">
+         <string comment="ss" extracomment="ssf"/>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -115,6 +127,9 @@
           <width>30</width>
           <height>30</height>
          </size>
+        </property>
+        <property name="toolTip">
+         <string>Excute single cycle.</string>
         </property>
         <property name="text">
          <string/>
