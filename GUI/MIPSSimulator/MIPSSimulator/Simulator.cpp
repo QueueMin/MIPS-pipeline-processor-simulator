@@ -192,6 +192,8 @@ public:
     }
     else if (BranchCompareData1 == BranchCompareData2 && cUnit.Branch && HazardUnit.IFIDWrite)
     { // beq instruction
+      IDEX.Data1 = BranchCompareData1;
+      IDEX.Data2 = BranchCompareData2;
       this->flush = 1;
       this->PCSrc = 1;
       this->Jump = 0;

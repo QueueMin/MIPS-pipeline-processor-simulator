@@ -8,6 +8,7 @@ public:
 	bool PCWrite;
 	bool IFIDWrite;
 	bool notStall;
+	std::bitset<6> oper;
 	std::bitset<5> Rs;
 	std::bitset<5> Rt;
 
@@ -16,12 +17,16 @@ public:
 		this->PCWrite = 1;
 		this->IFIDWrite = 1;
 		this->notStall = 1; // 1일때는 control 0일때 nop
+		this->oper.reset();
 		this->Rs.reset();
 		this->Rt.reset();
 	}
 
 	void detect(IF_ID &IFID, ID_EX IDEX, EX_MEM EXMEM)
 	{
+		for (int i = 0; i < 6; i++){
+			oper[i] = IFID.Inst[i + 26];
+		}
 		for (int i = 0; i < 5; i++){
 			Rs[i] = IFID.Inst[i + 21];
 		}
@@ -31,8 +36,15 @@ public:
 		this->PCWrite = 1;
 		this->IFIDWrite = 1;
 		this->notStall = 1;
-		
-		if (IDEX.MemRead == 1 || (IDEX.RegWrite == 1 && IDEX.Rd != 0))
+		if(oper == 4 && IDEX.RegWrite == 1 && IDEX.Rd != 0){
+			if (IDEX.Rd == Rs || IDEX.Rd == Rt)
+			{
+				this->PCWrite = 0;
+				this->IFIDWrite = 0;
+				this->notStall = 0;
+			}
+		}
+		if (IDEX.MemRead == 1)
 		{
 			if (IDEX.Rt == Rs || IDEX.Rt == Rt)
 			{
