@@ -356,10 +356,20 @@ public:
       return;
     }
     std::string oper, rs, rt, rd, con, tmp;
+    char comment;
     while (!fin.eof())
     {
       oper = "";
-      fin >> oper >> rd;
+      fin >> oper;
+      if (oper[0] == '#'){
+        fin.get(comment);
+        while (comment != '\n' && !fin.eof()){
+          fin.get(comment);
+        }
+        continue;
+      }
+
+      fin >> rd;
       if (oper == "")
         break;
       if (rd == ":" || oper[oper.length() - 1] == ':') // JumpIdx 저장 beq 이동시 사용
