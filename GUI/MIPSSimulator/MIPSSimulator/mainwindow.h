@@ -40,7 +40,7 @@ private slots:
     void regToDec();
     void regToHex();
 
-    void refreshRegTable(int code);
+    void refreshRegTable(int code, int chg);
     void refreshMemTable(int code);
 
     void memToBin();

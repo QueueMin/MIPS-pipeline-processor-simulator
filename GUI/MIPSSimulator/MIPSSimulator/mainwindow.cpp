@@ -79,7 +79,7 @@ void MainWindow::on_openButton_clicked()
         ui->instructionTable->setItem(i, 1, inst);
     }
     refreshImgInfo();
-    refreshRegTable(this->RegEncodeTo);
+    refreshRegTable(this->RegEncodeTo, 0);
     refreshMemTable(this->MEMEncodeTo);
 }
 
@@ -160,7 +160,7 @@ QString binToCode(std::bitset<32> val, int code){
     return ans;
 }
 
-void MainWindow::refreshRegTable(int code){
+void MainWindow::refreshRegTable(int code, int chg){
     QTableWidgetItem* reg = new QTableWidgetItem;
     if (code == 2){
         QString tmp = "";
@@ -185,7 +185,7 @@ void MainWindow::refreshRegTable(int code){
         return;
     }
     reg->setTextAlignment(Qt::AlignCenter);
-    if (ui->regTable->itemAt(0,0) != NULL){
+    if ((ui->regTable->itemAt(0,0) != NULL) && chg){
         if (ui->regTable->itemAt(0,0)->text() != reg->text()){
             reg->setForeground(brushR);
         }
@@ -223,8 +223,21 @@ void MainWindow::refreshRegTable(int code){
             break;
         }
         reg->setTextAlignment(Qt::AlignCenter);
-        if (ui->regTable->item(i+1,0) != NULL){
-            if (ui->regTable->item(i+1, 0)->text() != binToCode(sim->Regi[i], this->RegEncodeTo)){
+        if ((ui->regTable->item(i+1, 0) != NULL)&&chg){
+            if (code == 2){
+                QString cmp = "";
+                for (int j = 0; j < 4; j++){
+                    cmp += QString::fromStdString((sim->Regi[i]).to_string().substr(j*4, 4));
+                    cmp += " ";
+                }
+                cmp+="\n";
+                for (int j = 4; j < 8; j++){
+                    cmp += QString::fromStdString((sim->Regi[i]).to_string().substr(j*4, 4));
+                    if (j == 7) break;
+                    cmp += " ";
+                }
+                if (ui->regTable->item(i+1, 0)->text() != cmp) reg->setForeground(brushR);
+            }else if (ui->regTable->item(i+1, 0)->text() != binToCode(sim->Regi[i], this->RegEncodeTo)){
                 reg->setForeground(brushR);
             }
         }
@@ -240,17 +253,17 @@ void MainWindow::refreshRegTable(int code){
 
 void MainWindow::regToBin(){
     this->RegEncodeTo = 2;
-    refreshRegTable(this->RegEncodeTo);
+    refreshRegTable(this->RegEncodeTo, 0);
 }
 
 void MainWindow::regToDec(){
     this->RegEncodeTo = 10;
-    refreshRegTable(this->RegEncodeTo);
+    refreshRegTable(this->RegEncodeTo, 0);
 }
 
 void MainWindow::regToHex(){
     this->RegEncodeTo = 16;
-    refreshRegTable(this->RegEncodeTo);
+    refreshRegTable(this->RegEncodeTo, 0);
 }
 
 void MainWindow::resetImg(){
@@ -576,7 +589,7 @@ void MainWindow::on_cycleButton_clicked()
     sim->runSingleCycle();
     refreshImgInfo();
     refreshMemTable(this->MEMEncodeTo);
-    refreshRegTable(this->RegEncodeTo);
+    refreshRegTable(this->RegEncodeTo, 1);
 }
 
 QGraphicsTextItem* MainWindow::addText(QString s, int x, int y, QString color){
