@@ -50,7 +50,7 @@ void MainWindow::on_openButton_clicked()
 {
     delete(sim);
     sim = new Simulator();
-    QString fileName = QFileDialog::getOpenFileName(this);
+    QString fileName = QFileDialog::getOpenFileName(this,"Select File", "", "Assembly(*.s);; All file(*.*)");
 //    this->sim->fileLoad(fileName.toStdString());
     sim->fileLoad(fileName.toStdString());
 
