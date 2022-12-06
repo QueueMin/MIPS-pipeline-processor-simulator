@@ -71,7 +71,8 @@ program counter와 $0~$31번 레지스터에 들어가는 데이터는 `Simulato
 
 * ![image](https://user-images.githubusercontent.com/55120768/205361415-73010205-6975-443c-87e1-bd11d4474db5.png) Display Settings: Register 탭에서 보여주는 값들과 Memory 탭에서 보여주는 값들을 각각 2진수, 10진수, 16진수로 변환하여 표시할 수 있도록 설정한다.
 
-![image](https://user-images.githubusercontent.com/55120768/205845809-954f796b-0a75-41ad-95d1-bb2c1bc2c470.png)    
+![image](https://user-images.githubusercontent.com/55120768/205845809-954f796b-0a75-41ad-95d1-bb2c1bc2c470.png)  ![image](https://user-images.githubusercontent.com/55120768/205850262-27b90413-03bc-4312-a815-a2bfc64ac3e2.png)
+
 * Instructions, Register, Memory Tab:
 선택한 탭의 정보를 표시한다. `Instrtuction Tab`은 각 Instruction이 할당된 PC와 encode된 code를 16진수로 표시한다. `Register Tab`은 현재 사이클이 시작할 때의 PC와 $0~$31번 레지스터에 들어가는 데이터가 표시된다. 이때, 이전 사이클과 비교해서 변화가 생긴 PC 혹은 register 값의 경우 붉은 색으로 highlight된다. `Memory Tab`은 데이터 필드에 저장된, 0이 아닌 데이터가 저장된 주소와 해당 값을 표시한다. 이때 .data directive나 특정 instruction을 통해 특정한 주소에 0을 저장하더라도 Tab에 표시되지 않는다.
 
