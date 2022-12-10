@@ -391,25 +391,107 @@ public:
       {
         int Wcnt = 0;
         startData = hexToBin(rd);
-        fin >> oper;
-        if (oper != ".word")
+        fin >> oper >> rd;
+        while (oper == ".word" || oper == ".byte" || oper == ".asciiz" ||
+               oper == ".ascii" || oper == ".space" || oper == ".half" ||
+               oper[oper.length()-1] == ':')
         {
-          for (int i = 0; i < oper.length(); i++)
+          // data 이름 ex) a:
+          if (oper[oper.length()-1] == ':')
           {
-            if (oper[i] == ':')
+            for (int i = 0; i < oper.length(); i++)
             {
-              oper.replace(oper.find(":"), 1, "");
-              break;
+              if (oper[i] == ':')
+              {
+                oper.replace(oper.find(":"), 1, "");
+                break;
+              }
             }
+            if(Wcnt % 4 != 0){
+              Wcnt += 4 - (Wcnt % 4);
+            }
+            WordsAddress.insert({oper, binToDec(startData) + Wcnt});
+            oper = rd;
+            fin >> rd;
           }
 
-          WordsAddress.insert({oper, startData});
-          fin >> oper;
-        }
-        fin >> rd;
-        while (oper == ".word")
-        {
-          Words.insert({decToHex(binToDec(startData) + Wcnt++ * 4), stoi(rd)});
+          int data;
+          if(oper != ".ascii" && oper != ".asciiz"){
+            if(rd[0] == '0' && rd[1] == 'x'){
+              data = hexToDec(rd);
+            }
+            else{
+              data = stoi(rd);
+            }
+          }
+          else{
+            rd.replace(rd.find("\""),1,"");
+            rd.replace(rd.find("\""),1,"");
+          }
+
+          if(oper == ".word"){
+            if(Wcnt % 4 != 0){
+              Wcnt += 4 - (Wcnt % 4);
+            }
+            Words.insert({decToHex(binToDec(startData) + Wcnt), data});
+            Wcnt += 4;
+          }
+          if(oper == ".byte"){
+            if(Wcnt % 4 == 0){
+              Words.insert({decToHex(binToDec(startData) + Wcnt), data});
+            }
+            else{
+              Words[decToHex(binToDec(startData)+Wcnt-Wcnt%4)] += data*(1<<(8*(Wcnt%4)));
+            }
+            Wcnt++;
+          }
+          if(oper == ".half"){
+            if(Wcnt % 2 == 1){
+              Wcnt++;
+            }
+            if(Wcnt % 4 == 0){
+              Words.insert({decToHex(binToDec(startData) + Wcnt), data});
+            }
+            else{
+              Words[decToHex(binToDec(startData)+Wcnt-Wcnt%4)] += data*(1<<(8*(Wcnt%4)));
+            }
+          }
+          if(oper == ".space"){
+            for(int i = 0;i<data;i++){
+              if(Wcnt%4 == 0){
+                Words.insert({decToHex(binToDec(startData) + Wcnt), 0});
+              }
+              Wcnt++;
+            }
+          }
+          if(oper == ".ascii"){
+            if(Wcnt % 4 == 0){
+              Words.insert({decToHex(binToDec(startData) + Wcnt), int(rd[0])});
+            }
+            else{
+              Words[decToHex(binToDec(startData)+Wcnt-Wcnt%4)] += int(rd[0])*(1<<(8*(Wcnt%4)));
+            }
+            Wcnt++;
+          }
+          if(oper == ".asciiz"){
+            for(int i = 0;i<rd.length();i++){
+              if(Wcnt % 4 == 0){
+                Words.insert({decToHex(binToDec(startData) + Wcnt), int(rd[i])});
+              }
+              else{
+                Words[decToHex(binToDec(startData)+Wcnt-Wcnt%4)] += int(rd[i])*(1<<(8*(Wcnt%4)));
+              }
+              Wcnt++;
+            }
+            if(Wcnt % 4 == 0){
+              Words.insert({decToHex(binToDec(startData) + Wcnt), 0});
+            }
+            else{
+              Words[decToHex(binToDec(startData)+Wcnt-Wcnt%4)] += 0;
+            }
+            Wcnt++;
+          }
+
           fin >> oper >> rd;
         }
       }

@@ -54,7 +54,7 @@ unsigned int hexToDec(std::string Hex)
 		Dec <<= 4;
 		for (int j = 0; j < 16; j++)
 		{
-			if (str[j] == Hex[i])
+			if (str[j] == Hex[i] || str[j] - 32 == Hex[i])
 			{
 				Dec += j;
 				break;
