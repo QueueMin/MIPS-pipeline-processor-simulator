@@ -138,7 +138,7 @@ public:
     for (int i = 0; i < 26; i++)
       JumpDirection[i + 2] = this->IFID.Inst[i]; // shift 2
 
-    // HazardUnit.detect(IFID,IDEX,EXMEM);
+    HazardUnit.detect(IFID,IDEX,EXMEM);
     cUnit.setControl(Operation);
 
     if (HazardUnit.notStall)

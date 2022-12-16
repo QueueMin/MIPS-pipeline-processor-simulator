@@ -535,22 +535,22 @@ void MainWindow::refreshImgInfo(){
     fontB(gFetchedPC);
 
     // for debug
-//    QString inst1 = QString::fromStdString((sim->IFID.debugInst));
-//    QGraphicsTextItem* ginst1 = this->circuitScene.addText(inst1);
-//    ginst1->setPos(200, 650);
-//    fontK(ginst1);
-//    QString inst2 = QString::fromStdString((sim->IDEX.debugInst));
-//    QGraphicsTextItem* ginst2 = this->circuitScene.addText(inst2);
-//    ginst2->setPos(580, 650);
-//    fontK(ginst2);
-//    QString inst3 = QString::fromStdString((sim->EXMEM.debugInst));
-//    QGraphicsTextItem* ginst3 = this->circuitScene.addText(inst3);
-//    ginst3->setPos(980, 650);
-//    fontK(ginst3);
-//    QString inst4 = QString::fromStdString((sim->MEMWB.debugInst));
-//    QGraphicsTextItem* ginst4 = this->circuitScene.addText(inst4);
-//    ginst4->setPos(1160, 650);
-//    fontK(ginst4);
+    QString inst1 = QString::fromStdString((sim->IFID.debugInst));
+    QGraphicsTextItem* ginst1 = this->circuitScene.addText(inst1);
+    ginst1->setPos(200, 650);
+    fontK(ginst1);
+    QString inst2 = QString::fromStdString((sim->IDEX.debugInst));
+    QGraphicsTextItem* ginst2 = this->circuitScene.addText(inst2);
+    ginst2->setPos(580, 650);
+    fontK(ginst2);
+    QString inst3 = QString::fromStdString((sim->EXMEM.debugInst));
+    QGraphicsTextItem* ginst3 = this->circuitScene.addText(inst3);
+    ginst3->setPos(980, 650);
+    fontK(ginst3);
+    QString inst4 = QString::fromStdString((sim->MEMWB.debugInst));
+    QGraphicsTextItem* ginst4 = this->circuitScene.addText(inst4);
+    ginst4->setPos(1160, 650);
+    fontK(ginst4);
 
 
 
