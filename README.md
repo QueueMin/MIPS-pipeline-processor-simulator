@@ -53,7 +53,7 @@ single cycle 방식은 instruction이 순차적으로 진행되지만 pipeline �
 pipeline 구조에서 발생하는 hazard로 lw instruction에서 Rd값을 사용하는 instruction이 뒤따르는 경우 forwarding으로 hazard를 해결할 수 없다. 따라서 Hazard Detection Unit에서 hazard 유무를 판별해 bubble을 배치한다.
 
 ### Control Hazard
-bubble의 갯수를 줄이기 위해 branch instruction이 계산되기 전에 다음 명령어를 fatch하는것에서 생기는 hazard이다. 본 프로젝트에서는 as not taken 방식을 선택했다. 즉 branch instruction 이 있는 Program Counter값의 다음 instruction을 fatch 한다. 이 상황에서 branch된다면 IFFlush로 fatch되는 값을 0으로 바꿔준다.
+bubble의 갯수를 줄이기 위해 branch instruction이 계산되기 전에 다음 명령어를 fetch하는것에서 생기는 hazard이다. 본 프로젝트에서는 as not taken 방식을 선택했다. 즉 branch instruction 이 있는 Program Counter값의 다음 instruction을 fetch 한다. 이 상황에서 branch된다면 IFFlush로 fetch되는 값을 0으로 바꿔준다.
 
 ------
 ## How code works
