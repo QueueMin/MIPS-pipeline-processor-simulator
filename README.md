@@ -40,7 +40,7 @@ single cycle 방식에서는 하나의 instruction의 수행을 끝낸 후 다�
 ![pipelinePerformance](https://user-images.githubusercontent.com/54925443/204225452-eba3f83d-cdb6-4bf6-a20f-cb27dd9c0060.png)
 
 ## Hazard
-single cycle 방식은 instruction이 순차적으로 진행되지만 pipeline 방식은 이전 instruction이 끝나기 전에 다음 instruction이 fatch되기 때문에 데이터 처리 과정에서 hazard가 발생한다.
+single cycle 방식은 instruction이 순차적으로 진행되지만 pipeline 방식은 이전 instruction이 끝나기 전에 다음 instruction이 fetch되기 때문에 데이터 처리 과정에서 hazard가 발생한다.
 
 ### Data Hazard
 ![DataHazard](https://user-images.githubusercontent.com/54925443/204225772-ad19a38a-b712-42a5-a147-e2021676506a.png)
